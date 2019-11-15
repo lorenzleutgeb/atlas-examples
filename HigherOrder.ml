@@ -1,13 +1,3 @@
-id x = x;
-
-const x y = x;
-
-flip f x y = f y x;
-
-not b = if b then false else true;
-
-null t = if t == nil then true else false;
-
 and t =
   match t with
     | nil -> true
