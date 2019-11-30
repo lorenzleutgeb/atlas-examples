@@ -1,8 +1,10 @@
+cons :: a * Tree a -> Tree a
 cons x t = (nil, x, t)
 
 (**
  * In our setting the tail of nil is nil.
  *)
+tl :: Tree a -> Tree a
 tl t = match t with
   | nil       -> nil
   | (l, x, r) -> r
@@ -22,6 +24,7 @@ tl t = match t with
  *
  * Attempt for annotation is symmetric to append_left.
  *)
+append :: Tree a * Tree a -> Tree a
 append t1 t2 = match t1 with
   | nil       -> t2
   | (l, x, r) -> (cons x (append r t2))
@@ -34,10 +37,12 @@ append t1 t2 = match t1 with
  * on trees, but costs the "rightmost depth"
  * of t.
  *)
+descend :: Tree a -> Tree a
 descend t = match t with
   | nil       -> nil
   | (l, m, r) -> (descend r)
 
+is :: Tree a -> Tree a
 is t = match t with
   | nil         -> true
   | (lx, x, rx) -> match lx with
@@ -55,6 +60,7 @@ is t = match t with
  * This function is taken from David Obwaller's
  * mail on 2019-09-11.
  *)
+iter :: Tree a -> Tree a
 iter t = match t with
   | nil       -> nil
   | (l, x, r) -> (cons x (iter r))
@@ -71,6 +77,7 @@ iter t = match t with
  * in some terms dependent on t1.
  * We think that our type system cannot solve this.
  *)
+rev_append :: Tree a * Tree a -> Tree a
 rev_append t1 t2 = match t1 with
   | nil       -> t2
   | (l, x, r) -> (rev_append r (cons x t2))

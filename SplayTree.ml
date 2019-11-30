@@ -1,3 +1,4 @@
+splay :: a * Tree a -> Tree a
 splay a t = match t with
     | nil         -> nil
     | (cl, c, cr) -> if a == c
@@ -35,6 +36,7 @@ splay a t = match t with
                                 | (al, x, xa) -> (((cl, c, bl), b, al), x, xa)
 
 (* Assumption: a < b < c *)
+splay_zigzig :: a * Tree a -> Tree a
 splay_zigzig a t = match t with
     | nil         -> nil
     | (cl, c, cr) -> if a == c
@@ -53,6 +55,7 @@ splay_zigzig a t = match t with
                     else nil
             else nil
 
+splay_max :: Tree a -> Tree a
 splay_max t = match t with
     | nil       -> nil
     | (l, b, r) -> match r with
@@ -63,6 +66,7 @@ splay_max t = match t with
                 | nil          -> nil
                 | (rrl, x, xa) -> (((l, b, rl), c, rrl), x, xa)
 
+delete :: a * Tree a -> Tree a
 delete a t = if t == nil
     then nil
     else match splay a t with
@@ -73,6 +77,7 @@ delete a t = if t == nil
                     | (l', m, r') -> (l', m, r)
             else (l, a', r)
 
+insert :: a * Tree a -> Tree a
 insert a t = if t == nil
     then (nil, a, nil)
     else match splay a t with
@@ -83,6 +88,7 @@ insert a t = if t == nil
                     then (l, a, (nil, a', r))
                     else ((l, a', nil), a, r)
 
+contains :: a * Tree a -> Tree a
 contains a t = match t with
   | nil       -> false
   | (l, x, r) -> let ts = splay a (l, x, r) in match ts with

@@ -1,15 +1,22 @@
+singleton :: a -> Tree a
 singleton x = (nil, x, nil)
 
+id :: Tree a -> Tree a
 id t = match t with | (a, b, c) -> (a, b, c)
 
+left :: Tree a -> Tree a
 left t = match t with | (l, x, r) -> l
 
+right :: Tree a -> Tree a
 right t = match t with | (l, x, r) -> r
 
+flip :: Tree a -> Tree a
 flip t = match t with | (l, x, r) -> (r, x, l)
 
+empty :: Tree a -> Bool
 empty t = match t with | nil -> true | (r, x, l) -> false
 
+clone :: a * Tree a -> Tree a
 clone x t = (t, x, t)
 
 (**
@@ -83,6 +90,7 @@ clone x t = (t, x, t)
  *     ht(t) >= 0
  *     by definition of ht.
  *)
+contains_unordered :: a * Tree a -> Tree a
 contains_unordered x t = match t with
     | nil       -> false
     | (l, y, r) -> if x == y
@@ -114,6 +122,7 @@ contains_unordered x t = match t with
  *   rk(t)                                 >= rk((iter_both l, x, iter_both r)) + 1
  * ! Error, since we cannot expand `(iter_both l, x, iter_both r)` meaningfully.
  *)
+iter :: Tree a -> Tree a
 iter t = match t with
   | nil       -> nil
   | (l, x, r) -> (iter l, x, iter r)
