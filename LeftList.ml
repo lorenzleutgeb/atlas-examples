@@ -1,7 +1,7 @@
-cons :: a * Tree a -> Tree a
+cons :: α * Tree α -> Tree α
 cons x t = (t, x, nil)
 
-tl :: Tree a -> Tree a
+tl :: Tree α -> Tree α
 tl t = match t with
   | nil       -> nil
   | (l, x, r) -> l
@@ -35,7 +35,7 @@ tl t = match t with
  *   rk(nil) >= 0
  *   0       >= 0
  *)
-append :: Tree a * Tree a -> Tree a
+append :: Tree α * Tree α -> Tree α
 append t1 t2 = match t1 with
   | nil       -> t2
   | (l, x, r) -> (cons x (append l t2))
@@ -104,7 +104,7 @@ append t1 t2 = match t1 with
  *   Case: ht(l) < ht(r)
  *     ht(r) >= ht(l)
  *)
-descend :: Tree a -> Tree a
+descend :: Tree α -> Tree β
 descend t = match t with
   | nil       -> nil
   | (l, x, r) -> (descend l)
@@ -117,7 +117,7 @@ descend t = match t with
  * on trees, but costs the "leftmost depth"
  * of t1.
  *)
-descend_on_first :: Tree a * Tree a -> Tree a
+descend_on_first :: Tree α * Tree α -> Tree β
 descend_on_first t1 t2 = match t1 with
   | nil       -> nil
   | (l, x, r) -> (descend_on_first l t2)
@@ -130,17 +130,17 @@ descend_on_first t1 t2 = match t1 with
  * on trees, but costs the "leftmost depth"
  * of t2.
  *)
-descend_on_second :: Tree a * Tree a -> Tree a
+descend_on_second :: Tree α * Tree α -> Tree β
 descend_on_second t1 t2 = match t2 with
   | nil       -> nil
   | (l, x, r) -> (descend_on_second t1 l)
 
-inorder :: Tree a * Tree a -> Tree a
+inorder :: Tree α * Tree α -> Tree α
 inorder t1 t2 = match t1 with
   | nil       -> t2
   | (l, x, r) -> (inorder l (cons x (inorder r t2)))
 
-is :: Tree a -> Bool
+is :: Tree α -> Bool
 is t = match t with
   | nil         -> true
   | (lx, x, rx) -> match rx with
@@ -155,17 +155,17 @@ is t = match t with
  * on trees, but costs the "leftmost depth"
  * of t.
  *)
-iter :: Tree a -> Tree a
+iter :: Tree α -> Tree α
 iter t = match t with
   | nil       -> nil
   | (l, x, r) -> (cons x (iter l))
 
-postorder :: Tree a * Tree a -> Tree a
+postorder :: Tree α * Tree α -> Tree α
 postorder t1 t2 = match t1 with
   | nil       -> t2
   | (l, x, r) -> (postorder l (postorder r (cons x t2)))
 
-preorder :: Tree a * Tree a -> Tree a
+preorder :: Tree α * Tree α -> Tree α
 preorder t1 t2 = match t1 with
   | nil       -> t2
   | (l, x, r) -> (cons x (preorder l (preorder r t2)))
@@ -182,7 +182,7 @@ preorder t1 t2 = match t1 with
  * in some terms dependent on t1.
  * We think that our type system cannot solve this.
  *)
-rev_append :: Tree a * Tree a -> Tree a
+rev_append :: Tree α * Tree α -> Tree α
 rev_append t1 t2 = match t1 with
   | nil       -> t2
   | (l, x, r) -> (rev_append l (cons x t2))

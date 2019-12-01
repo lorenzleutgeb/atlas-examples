@@ -1,25 +1,25 @@
-f ::  Tree a * a *  Tree a ->  Tree a;
+f :: Tree α * α *  Tree α -> Tree α
 f l x r = (l, x, r);
 
-g :: Tree a * Tree a -> Tree a
+g :: Tree α * Tree α -> Tree α
 g t e1 =
   match t with
     | nil       -> e1
     | (l, x, r) -> (l, x, r);
 
-h ::  Tree a *  Tree a ->  Tree a;
+h ::  Tree α *  Tree α -> Tree α
 h x y = x;
 
-i :: a * a -> Bool;
+i :: Ord α => α * α -> Bool
 i x y = x < y;
 
-j :: Bool ->  Tree a;
+j :: Bool -> Tree α
 j x =
   if x
     then nil
     else nil;
 
-k :: a * a * a ->  Tree a;
+k :: Ord α => α * α * β -> Tree β
 k x y z =
   let p = x < y
   in
@@ -32,7 +32,7 @@ k x y z =
       (l, z, r);
 
 (* test for (w :: var) rule *)
-l1 :: a * a *  Tree a * a ->  Tree a;
+l1 :: Ord α => α * α * Tree β * β -> Tree β
 l1 x y t a =
   let p = x < y
   in
@@ -43,15 +43,9 @@ l1 x y t a =
       in
       (t, a, n);
 
-m :: Tree a -> a -> a -> Tree a
+m :: Tree α * α * α -> Tree α
 m t x y =
   let s = (t, y, t)
   in
   (t, x, s);
 
-n1 :: (a -> Tree b) * a * b * Tree b -> Tree b
-n1 f x y z =
-  let l = f x in
-  let r = (l, y, z)
-  in
-  (l, y, z);

@@ -1,4 +1,5 @@
-splay :: a * Tree a -> Tree a
+(* TODO: Version that does not need Eq (Tree α)? *)
+splay :: (Ord α, Eq (Tree α)) => α * Tree α -> Tree α
 splay a t = match t with
     | nil         -> nil
     | (cl, c, cr) -> if a == c
@@ -36,7 +37,7 @@ splay a t = match t with
                                 | (al, x, xa) -> (((cl, c, bl), b, al), x, xa)
 
 (* Assumption: a < b < c *)
-splay_zigzig :: a * Tree a -> Tree a
+splay_zigzig :: (Ord α, Eq (Tree α)) => α * Tree α -> Tree α
 splay_zigzig a t = match t with
     | nil         -> nil
     | (cl, c, cr) -> if a == c
@@ -55,7 +56,8 @@ splay_zigzig a t = match t with
                     else nil
             else nil
 
-splay_max :: Tree a -> Tree a
+(* TODO: Version that does not need Eq (Tree α)? *)
+splay_max :: Eq (Tree α) => Tree α -> Tree α
 splay_max t = match t with
     | nil       -> nil
     | (l, b, r) -> match r with
@@ -66,7 +68,7 @@ splay_max t = match t with
                 | nil          -> nil
                 | (rrl, x, xa) -> (((l, b, rl), c, rrl), x, xa)
 
-delete :: a * Tree a -> Tree a
+delete :: (Ord α, Eq (Tree α)) => α * Tree α -> Tree α
 delete a t = if t == nil
     then nil
     else match splay a t with
@@ -77,7 +79,7 @@ delete a t = if t == nil
                     | (l', m, r') -> (l', m, r)
             else (l, a', r)
 
-insert :: a * Tree a -> Tree a
+insert :: (Ord α, Eq (Tree α)) => α * Tree α -> Tree α
 insert a t = if t == nil
     then (nil, a, nil)
     else match splay a t with
@@ -88,7 +90,7 @@ insert a t = if t == nil
                     then (l, a, (nil, a', r))
                     else ((l, a', nil), a, r)
 
-contains :: a * Tree a -> Tree a
+contains :: (Ord α, Eq (Tree α)) => α * Tree α -> Bool
 contains a t = match t with
   | nil       -> false
   | (l, x, r) -> let ts = splay a (l, x, r) in match ts with

@@ -1,13 +1,13 @@
-del_min :: Tree a -> Tree a
+del_min :: Ord α => Tree α -> Tree α
 del_min t = match t with
   | nil       -> nil
   | (l, m, r) -> (merge l r)
 
-insert :: a * Tree a -> Tree a
+insert :: Ord α => α * Tree α -> Tree α
 insert a h = (merge (nil, a, nil) h)
 (* insert a h = (merge (Tree.singleton a) h) *)
 
-merge :: Tree a * Tree a -> Tree a
+merge :: Ord α => Tree α * Tree α -> Tree α
 merge h1 h2 = match h1 with
   | nil          -> h2
   | (l1, a1, r1) -> match h2 with

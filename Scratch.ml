@@ -1,10 +1,10 @@
-id :: a -> a
+id :: α -> α
 id x = x
 
-left :: a * b -> a
+left :: α * β -> α
 left x y = x
 
-right :: a * b -> b
+right :: α * β -> β
 right x y = y
 
 (**
@@ -12,10 +12,10 @@ right x y = y
  *
  *   empty_1 t | log(|t| + 2) + log(2 · |t| + 2) + 1 -> 0
  *)
-empty_1 :: Tree a -> Bool
+empty_1 :: Tree α -> Bool
 empty_1 t = (Tree.empty t)
 
-empty_2 :: Tree a -> Bool
+empty_2 :: Tree α -> Bool
 empty_2 t = (empty_1 t)
 
 (**
@@ -28,17 +28,17 @@ empty_2 t = (empty_1 t)
  * expected. This suggests that there's a bug in the
  * implementation of annotation generation for (let).
  *)
-empty_3 :: Tree a -> Bool
+empty_3 :: Tree α -> Bool
 empty_3 t = (let s = t in (Tree.empty s))
 
-same_root :: Tree a * Tree a -> Bool
+same_root :: (Eq α, Eq (Tree α)) => Tree α * Tree α -> Bool
 same_root t1 t2 = match t1 with
   | nil -> (if t2 == nil then true else false)
   | (lx, x, rx) -> match t2 with
     | nil -> false
     | (ly, y, ry) -> (if y == x then true else false)
 
-empty_4 :: Tree a * Tree a -> Bool
+empty_4 :: Tree α * Tree β -> Bool
 empty_4 t1 t2 = (Bool.or (Tree.empty t1) (Tree.empty t2))
 
 (**
@@ -46,7 +46,7 @@ empty_4 t1 t2 = (Bool.or (Tree.empty t1) (Tree.empty t2))
  *
  *   same_root_obviously t | log(|t| + 2) + log(2 · |t| + 2) + 1 -> 0
  *)
-same_root_obviously :: Tree a -> Bool
+same_root_obviously :: (Eq α, Eq (Tree α)) => Tree α -> Bool
 same_root_obviously t = (same_root t t)
 
 (**
@@ -55,5 +55,5 @@ same_root_obviously t = (same_root t t)
  *
  *   first_nonempty_and_second_empty t1 t2 | log(|t2| + 2) + log(2 · |t2| + 2) + 1 -> 0
  *)
-first_nonempty_and_second_empty :: Tree a * Tree a -> Bool
+first_nonempty_and_second_empty :: Tree α * Tree β -> Bool
 first_nonempty_and_second_empty t1 t2 = match t1 with | (l, x, r) -> Tree.empty t2 | nil -> false
