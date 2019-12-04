@@ -1,13 +1,13 @@
-cons :: α * Tree α -> Tree α
+cons ∷ α ⨯ Tree α → Tree α
 cons x t = (nil, x, t)
 
 (**
  * In our setting the tail of nil is nil.
  *)
-tl :: Tree α -> Tree α
+tl ∷ Tree α → Tree α
 tl t = match t with
-  | nil       -> nil
-  | (l, x, r) -> r
+  | nil       → nil
+  | (l, x, r) → r
 
 (**
  * The number of recursive calls is equivalent to
@@ -24,10 +24,10 @@ tl t = match t with
  *
  * Attempt for annotation is symmetric to append_left.
  *)
-append :: Tree α * Tree α -> Tree α
+append ∷ Tree α ⨯ Tree α → Tree α
 append t1 t2 = match t1 with
-  | nil       -> t2
-  | (l, x, r) -> (cons x (append r t2))
+  | nil       → t2
+  | (l, x, r) → (cons x (append r t2))
 
 (**
  * This function is equivalent to
@@ -37,17 +37,17 @@ append t1 t2 = match t1 with
  * on trees, but costs the "rightmost depth"
  * of t.
  *)
-descend :: Tree α -> Tree β
+descend ∷ Tree α → Tree β
 descend t = match t with
-  | nil       -> nil
-  | (l, m, r) -> (descend r)
+  | nil       → nil
+  | (l, m, r) → (descend r)
 
-is :: Tree α -> Bool
+is ∷ Tree α → Bool
 is t = match t with
-  | nil         -> true
-  | (lx, x, rx) -> match lx with
-    | nil         -> is rx
-    | (ly, y, ry) -> false
+  | nil         → true
+  | (lx, x, rx) → match lx with
+    | nil         → is rx
+    | (ly, y, ry) → false
 
 (**
  * This function is equivalent to
@@ -60,10 +60,10 @@ is t = match t with
  * This function is taken from David Obwaller's
  * mail on 2019-09-11.
  *)
-iter :: Tree α -> Tree α
+iter ∷ Tree α → Tree α
 iter t = match t with
-  | nil       -> nil
-  | (l, x, r) -> (cons x (iter r))
+  | nil       → nil
+  | (l, x, r) → (cons x (iter r))
 
 (**
  * The number of recursive calls is equivalent to
@@ -77,7 +77,7 @@ iter t = match t with
  * in some terms dependent on t1.
  * We think that our type system cannot solve this.
  *)
-rev_append :: Tree α * Tree α -> Tree α
+rev_append ∷ Tree α ⨯ Tree α → Tree α
 rev_append t1 t2 = match t1 with
-  | nil       -> t2
-  | (l, x, r) -> (rev_append r (cons x t2))
+  | nil       → t2
+  | (l, x, r) → (rev_append r (cons x t2))

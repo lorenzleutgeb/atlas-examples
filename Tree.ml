@@ -1,22 +1,22 @@
-singleton :: α -> Tree α
+singleton ∷ α → Tree α
 singleton x = (nil, x, nil)
 
-id :: Tree α -> Tree α
-id t = match t with | (a, b, c) -> (a, b, c)
+id ∷ Tree α → Tree α
+id t = match t with | (a, b, c) → (a, b, c)
 
-left :: Tree α -> Tree α
-left t = match t with | (l, x, r) -> l
+left ∷ Tree α → Tree α
+left t = match t with | (l, x, r) → l
 
-right :: Tree α -> Tree α
-right t = match t with | (l, x, r) -> r
+right ∷ Tree α → Tree α
+right t = match t with | (l, x, r) → r
 
-flip :: Tree α -> Tree α
-flip t = match t with | (l, x, r) -> (r, x, l)
+flip ∷ Tree α → Tree α
+flip t = match t with | (l, x, r) → (r, x, l)
 
-empty :: Tree α -> Bool
-empty t = match t with | nil -> true | (r, x, l) -> false
+empty ∷ Tree α → Bool
+empty t = match t with | nil → true | (r, x, l) → false
 
-clone :: α * Tree α -> Tree α
+clone ∷ α ⨯ Tree α → Tree α
 clone x t = (t, x, t)
 
 (**
@@ -90,10 +90,10 @@ clone x t = (t, x, t)
  *     ht(t) >= 0
  *     by definition of ht.
  *)
-contains_unordered :: Eq α => α * Tree α -> Bool
+contains_unordered ∷ Eq α ⇒ α ⨯ Tree α → Bool
 contains_unordered x t = match t with
-    | nil       -> false
-    | (l, y, r) -> if x == y
+    | nil       → false
+    | (l, y, r) → if x == y
         then true
         else (Bool.or (contains_unordered x l) (contains_unordered x r))
 
@@ -122,7 +122,7 @@ contains_unordered x t = match t with
  *   rk(t)                                 >= rk((iter_both l, x, iter_both r)) + 1
  * ! Error, since we cannot expand `(iter_both l, x, iter_both r)` meaningfully.
  *)
-iter :: Tree α -> Tree α
+iter ∷ Tree α → Tree α
 iter t = match t with
-  | nil       -> nil
-  | (l, x, r) -> (iter l, x, iter r)
+  | nil       → nil
+  | (l, x, r) → (iter l, x, iter r)

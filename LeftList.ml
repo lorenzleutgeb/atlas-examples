@@ -1,10 +1,10 @@
-cons :: α * Tree α -> Tree α
+cons ∷ α ⨯ Tree α → Tree α
 cons x t = (t, x, nil)
 
-tl :: Tree α -> Tree α
+tl ∷ Tree α → Tree α
 tl t = match t with
-  | nil       -> nil
-  | (l, x, r) -> l
+  | nil       → nil
+  | (l, x, r) → l
 
 (**
  * The number of recursive calls is equivalent to
@@ -35,10 +35,10 @@ tl t = match t with
  *   rk(nil) >= 0
  *   0       >= 0
  *)
-append :: Tree α * Tree α -> Tree α
+append ∷ Tree α ⨯ Tree α → Tree α
 append t1 t2 = match t1 with
-  | nil       -> t2
-  | (l, x, r) -> (cons x (append l t2))
+  | nil       → t2
+  | (l, x, r) → (cons x (append l t2))
 
 (**
  * This function is equivalent to
@@ -104,10 +104,10 @@ append t1 t2 = match t1 with
  *   Case: ht(l) < ht(r)
  *     ht(r) >= ht(l)
  *)
-descend :: Tree α -> Tree β
+descend ∷ Tree α → Tree β
 descend t = match t with
-  | nil       -> nil
-  | (l, x, r) -> (descend l)
+  | nil       → nil
+  | (l, x, r) → (descend l)
 
 (**
  * This function is equivalent to
@@ -117,10 +117,10 @@ descend t = match t with
  * on trees, but costs the "leftmost depth"
  * of t1.
  *)
-descend_on_first :: Tree α * Tree α -> Tree β
+descend_on_first ∷ Tree α ⨯ Tree α → Tree β
 descend_on_first t1 t2 = match t1 with
-  | nil       -> nil
-  | (l, x, r) -> (descend_on_first l t2)
+  | nil       → nil
+  | (l, x, r) → (descend_on_first l t2)
 
 (**
  * This function is equivalent to
@@ -130,22 +130,22 @@ descend_on_first t1 t2 = match t1 with
  * on trees, but costs the "leftmost depth"
  * of t2.
  *)
-descend_on_second :: Tree α * Tree α -> Tree β
+descend_on_second ∷ Tree α ⨯ Tree α → Tree β
 descend_on_second t1 t2 = match t2 with
-  | nil       -> nil
-  | (l, x, r) -> (descend_on_second t1 l)
+  | nil       → nil
+  | (l, x, r) → (descend_on_second t1 l)
 
-inorder :: Tree α * Tree α -> Tree α
+inorder ∷ Tree α ⨯ Tree α → Tree α
 inorder t1 t2 = match t1 with
-  | nil       -> t2
-  | (l, x, r) -> (inorder l (cons x (inorder r t2)))
+  | nil       → t2
+  | (l, x, r) → (inorder l (cons x (inorder r t2)))
 
-is :: Tree α -> Bool
+is ∷ Tree α → Bool
 is t = match t with
-  | nil         -> true
-  | (lx, x, rx) -> match rx with
-    | nil         -> is lx
-    | (ly, y, ry) -> false
+  | nil         → true
+  | (lx, x, rx) → match rx with
+    | nil         → is lx
+    | (ly, y, ry) → false
 
 (**
  * This function is equivalent to
@@ -155,20 +155,20 @@ is t = match t with
  * on trees, but costs the "leftmost depth"
  * of t.
  *)
-iter :: Tree α -> Tree α
+iter ∷ Tree α → Tree α
 iter t = match t with
-  | nil       -> nil
-  | (l, x, r) -> (cons x (iter l))
+  | nil       → nil
+  | (l, x, r) → (cons x (iter l))
 
-postorder :: Tree α * Tree α -> Tree α
+postorder ∷ Tree α ⨯ Tree α → Tree α
 postorder t1 t2 = match t1 with
-  | nil       -> t2
-  | (l, x, r) -> (postorder l (postorder r (cons x t2)))
+  | nil       → t2
+  | (l, x, r) → (postorder l (postorder r (cons x t2)))
 
-preorder :: Tree α * Tree α -> Tree α
+preorder ∷ Tree α ⨯ Tree α → Tree α
 preorder t1 t2 = match t1 with
-  | nil       -> t2
-  | (l, x, r) -> (cons x (preorder l (preorder r t2)))
+  | nil       → t2
+  | (l, x, r) → (cons x (preorder l (preorder r t2)))
 
 (**
  * The number of recursive calls is equivalent to
@@ -182,7 +182,7 @@ preorder t1 t2 = match t1 with
  * in some terms dependent on t1.
  * We think that our type system cannot solve this.
  *)
-rev_append :: Tree α * Tree α -> Tree α
+rev_append ∷ Tree α ⨯ Tree α → Tree α
 rev_append t1 t2 = match t1 with
-  | nil       -> t2
-  | (l, x, r) -> (rev_append l (cons x t2))
+  | nil       → t2
+  | (l, x, r) → (rev_append l (cons x t2))

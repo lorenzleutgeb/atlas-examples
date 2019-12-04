@@ -11,14 +11,14 @@
 (**
  * Original definition:
  *
- *   is_root h = (case h of nil -> true | (l, x, r) -> r == nil)
+ *   is_root h = (case h of nil → true | (l, x, r) → r == nil)
  *)
-is_root :: Tree α -> Bool
+is_root ∷ Tree α → Bool
 is_root h = match h with
-  | nil       -> true
-  | (l, x, r) -> match r with
-    | nil          -> true
-    | (lr, xr, rr) -> false
+  | nil       → true
+  | (l, x, r) → match r with
+    | nil          → true
+    | (lr, xr, rr) → false
 
 (**
  * Original definition:
@@ -26,14 +26,14 @@ is_root h = match h with
  *   pheap nil = true
  *   pheap (l, x, r) = (pheap l /\ pheap r /\ (\forall y \in set_tree l. x <= y))
  *)
-pheap :: Ord α => Tree α -> Bool
+pheap ∷ Ord α ⇒ Tree α → Bool
 pheap h = match h with
-  | nil -> true
-  | (l, x, r) -> (Bool.and (Bool.and (pheap l) (pheap r)) (all_leq l x))
+  | nil → true
+  | (l, x, r) → (Bool.and (Bool.and (pheap l) (pheap r)) (all_leq l x))
 
 all_leq t x = match t with
-  | nil -> true
-  | (l, y, r) -> if y > x
+  | nil → true
+  | (l, y, r) → if y > x
     then false
     else (Bool.and (all_leq l x) (all_leq r x))
 
@@ -44,12 +44,12 @@ all_leq t x = match t with
  *   link (lx, x, nil) = (lx, x, nil)
  *   link (lx, x, (ly, y, ry)) = (if x < y then ((ly, y, lx), x, ry) else ((lx, x, ly), y, ry))
  *)
-link :: Ord α => Tree α -> Tree α
+link ∷ Ord α ⇒ Tree α → Tree α
 link h = match h with
-  | nil -> nil
-  | (lx, x, rx) -> match rx with
-    | nil -> (lx, x, nil)
-    | (ly, y, ry) -> if x < y
+  | nil → nil
+  | (lx, x, rx) → match rx with
+    | nil → (lx, x, nil)
+    | (ly, y, ry) → if x < y
       then ((ly, y, lx), x, ry)
       else ((lx, x, ly), y, ry)
 
@@ -58,7 +58,7 @@ link h = match h with
  *
  *   insert x h = merge (nil, x, nil) h
  *)
-insert :: Ord α => α * Tree α -> Tree α
+insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 insert x h = (merge (Tree.singleton x) h)
 
 (**
@@ -151,34 +151,34 @@ insert x h = (merge (Tree.singleton x) h)
  *   <= log' (|lx| + |rx| + 1 + |ly| + |ry| + 1) (monotone log'))
  *    = log' (|h1| + |h2|)
  *)
-merge :: Ord α => Tree α * Tree α -> Tree α
+merge ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α
 merge h1 h2 = match h1 with
-  | nil -> h2
-  | (lx, x, rx) -> match h2 with
-    | nil         -> (lx, x, rx)
-    | (ly, y, ry) -> (link (lx, x, (ly, y, nil)))
+  | nil → h2
+  | (lx, x, rx) → match h2 with
+    | nil         → (lx, x, rx)
+    | (ly, y, ry) → (link (lx, x, (ly, y, nil)))
 
-del_min :: Ord α => Tree α -> Tree α
+del_min ∷ Ord α ⇒ Tree α → Tree α
 del_min h = match h with
-  | nil       -> nil
-  | (l, x, r) -> (pass2 (pass1 l))
+  | nil       → nil
+  | (l, x, r) → (pass2 (pass1 l))
 
-pass1 :: Ord α => Tree α -> Tree α
+pass1 ∷ Ord α ⇒ Tree α → Tree α
 pass1 h = match h with
-  | nil -> nil
-  | (lx, x, rx) -> match rx with
-    | nil -> (lx, x, nil)
-    | (ly, y, ry) -> (link (lx, x, (ly, y, pass1 ry)))
+  | nil → nil
+  | (lx, x, rx) → match rx with
+    | nil → (lx, x, nil)
+    | (ly, y, ry) → (link (lx, x, (ly, y, pass1 ry)))
 
-pass2 :: Ord α => Tree α -> Tree α
+pass2 ∷ Ord α ⇒ Tree α → Tree α
 pass2 h = match h with
-  | nil -> nil
-  | (l, x, r) -> (link (l, x, pass2 r))
+  | nil → nil
+  | (l, x, r) → (link (l, x, pass2 r))
 
-merge_pairs :: Ord α => Tree α -> Tree α
+merge_pairs ∷ Ord α ⇒ Tree α → Tree α
 merge_pairs h = match h with
-  | nil -> nil
-  | (lx, x, rx) -> match rx with
-    | nil         -> (lx, x, nil)
-    | (ly, y, ry) -> (link (link (lx, x, (ly, y, merge_pairs ry))))
+  | nil → nil
+  | (lx, x, rx) → match rx with
+    | nil         → (lx, x, nil)
+    | (ly, y, ry) → (link (link (lx, x, (ly, y, merge_pairs ry))))
 

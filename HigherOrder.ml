@@ -7,55 +7,55 @@
   * last line of this file).
   *)
 
-and :: Tree Bool -> Bool
+and ∷ Tree Bool → Bool
 and t =
   match t with
-    | nil -> true
-    | (l, x, r) ->
+    | nil → true
+    | (l, x, r) →
       if and l
         then if x then and r
                   else false
         else false;
 
-or :: Tree Bool -> Bool
+or ∷ Tree Bool → Bool
 or t =
   match t with
-    | nil -> false
-    | (l, x, r) ->
+    | nil → false
+    | (l, x, r) →
       if or l then true
               else if x then true
                         else or r;
 
-any :: (α -> Bool) * Tree α -> Bool
+any ∷ (α → Bool) ⨯ Tree α → Bool
 any f t = or (map f t);
 
-all :: (α -> Bool) * Tree α -> Bool
+all ∷ (α → Bool) ⨯ Tree α → Bool
 all f t = and (map f t);
 
-map :: (α -> β) * Tree α -> Tree β
+map ∷ (α → β) ⨯ Tree α → Tree β
 map f t =
   match t with
-    | nil       -> nil
-    | (l, x, r) -> (map f l, f x, map f r);
+    | nil       → nil
+    | (l, x, r) → (map f l, f x, map f r);
 
-fold :: (β * α -> β) * β * Tree α -> β
+fold ∷ (β * α → β) * β ⨯ Tree α → β
 fold f z t =
   match t with
-    | nil -> z
-    | (l, x, r) -> f (f (fold f z l) x) (fold f z t);
+    | nil → z
+    | (l, x, r) → f (f (fold f z l) x) (fold f z t);
 
-zipWith :: (a * β -> γ) * Tree α * Tree β -> Tree γ
+zipWith ∷ (a * β → γ) ⨯ Tree α ⨯ Tree β → Tree γ
 zipWith f t u =
   match t with
-    | nil       -> nil
-    | (l, x, r) ->
+    | nil       → nil
+    | (l, x, r) →
         match u with
-          | nil       -> nil
-          | (v, y, w) -> let l' = zipWith f l v in
+          | nil       → nil
+          | (v, y, w) → let l' = zipWith f l v in
                          let r' = zipWith f r w in
                          (l', f x y, r');
 
-n1 :: (α -> Tree β) * a * β * Tree β -> Tree β
+n1 ∷ (α → Tree β) * a * β ⨯ Tree β → Tree β
 n1 f x y z =
   let l = f x in
   let r = (l, y, z)
