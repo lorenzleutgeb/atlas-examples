@@ -30,6 +30,12 @@ infinite_9 x t1 t2 = (let s = t2 in (infinite_9 x s t1, x, t1))
 infinite_10 ∷ Tree α → β
 infinite_10 t = (let s = t in (infinite_10 t))
 
+infinite_11 ∷ Tree α → β
+infinite_11 t = (let s = t in (infinite_11 s))
+
+infinite_12 ∷ α ⨯ Tree α → Tree α
+infinite_12 x t = (let s = t in (infinite_12 x s, x, nil))
+
 (**
  * The following is an interesting case, but the current implementation cannot type mutual recursion.
  *)
