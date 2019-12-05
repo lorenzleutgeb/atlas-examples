@@ -27,19 +27,34 @@ infinite_8 x t = (let s = t in (infinite_8 x s, x, s))
 infinite_9 ∷ α ⨯ Tree α ⨯ Tree α → Tree α
 infinite_9 x t1 t2 = (let s = t2 in (infinite_9 x s t1, x, t1))
 
+(**
+ * Requires sharing of t. Unused variable.
+ * Tricky, since we do not know what β is. Probably we should
+ * reject such inputs? How do we characterize them?
+ *)
 infinite_10 ∷ Tree α → β
 infinite_10 t = (let s = t in (infinite_10 t))
 
+(**
+ * Same problem with β as in 10.
+ *)
 infinite_11 ∷ Tree α → β
 infinite_11 t = (let s = t in (infinite_11 s))
 
+(**
+ * Similar to 11, but now we know the return type!
+ * We will not have to apply (share) for x since it is not a
+ * tree. The only complication is that the node constructor
+ * will be let-normalized, generating two more let expresssions
+ * (one binding `infinite_12 x s` the other binding `leaf`).
+ *)
 infinite_12 ∷ α ⨯ Tree α → Tree α
-infinite_12 x t = (let s = t in (infinite_12 x s, x, nil))
+infinite_12 x t = (let s = t in (infinite_12 x s, x, leaf))
 
 (**
  * The following is an interesting case, but the current implementation cannot type mutual recursion.
  *)
 (*
-infinite_na x t = (infinite_nb x t, x, nil)
-infinite_nb x t = (infinite_na x t, x, nil)
+infinite_na x t = (infinite_nb x t, x, leaf)
+infinite_nb x t = (infinite_na x t, x, leaf)
 *)

@@ -1,9 +1,9 @@
 cons ∷ α ⨯ Tree α → Tree α
-cons x t = (t, x, nil)
+cons x t = (t, x, leaf)
 
 tl ∷ Tree α → Tree α
 tl t = match t with
-  | nil       → nil
+  | leaf      → leaf
   | (l, x, r) → l
 
 (**
@@ -30,20 +30,20 @@ tl t = match t with
  *   ...                                   >= rk(append l t2) + log'(|append l t2|) + log'(|r|) + rk(r) + 1
  *   rk(l) + log'(|l|)                     >= rk(append l t2) + log'(|append l t2|) + 1
  * ! At this point we are stuck, since we do not know how to cancel `append l t2`.
- * Case: t1 == nil
+ * Case: t1 == leaf
  *   rk(t1)  >= 0
- *   rk(nil) >= 0
+ *   rk(leaf) >= 0
  *   0       >= 0
  *)
 append ∷ Tree α ⨯ Tree α → Tree α
 append t1 t2 = match t1 with
-  | nil       → t2
+  | leaf      → t2
   | (l, x, r) → (cons x (append l t2))
 
 (**
  * This function is equivalent to
  *
- *     f t = nil
+ *     f t = leaf
  *
  * on trees, but costs the "leftmost depth"
  * of t.
@@ -54,16 +54,16 @@ append t1 t2 = match t1 with
  *   descend t | 1 * rk(t)
  *
  * Attempt to prove:
- * Case: t == nil
+ * Case: t == leaf
  *   rk(t)   >= 0
- *   rk(nil) >= 0
+ *   rk(leaf) >= 0
  *   0       >= 0
  * Case: t == (l, x, r)
  *   rk(t)                                 >= rk(l) + 1
  *   rk((l, x, r))                         >= rk(l) + 1
  *   rk(l) + log'(|l|) + log'(|r|) + rk(r) >= rk(l) + 1
  *           log'(|l|) + log'(|r|) + rk(r) >=         1
- * ! Error, since for l == nil and r == nil we have that 0 >= 1.
+ * ! Error, since for l == leaf and r == leaf we have that 0 >= 1.
  *
  * -------------------------------------------------------------------
  *
@@ -73,25 +73,25 @@ append t1 t2 = match t1 with
  *   ...              |     log'(    |t| + 2)
  *
  * Attempt to prove:
- * Case: t == nil
+ * Case: t == leaf
  *   log'(|t| + 2) >= 0
  *   log'(|t| + 2) >= log'(2) = 1 >= 0
  * Case: t == (l, x, r)
  *   log'(|t|         + 2) >= log'(|l| + 2) + 1
  *   log'(|(l, x, r)| + 2) >= log'(|l| + 2) + 1
  *   log'(|l| + |r|   + 2) >= log'(|l| + 2) + 1
- * ! Error, since for l == nil and r == nil we have that 1 >= 2.
+ * ! Error, since for l == leaf and r == leaf we have that 1 >= 2.
  *
  * -------------------------------------------------------------------
  *
  * Attempt to annotate with new potential `ht` (short for "height"):
- *   ht(nil)      := 1
+ *   ht(leaf)      := 1
  *   ht((l, _, r) := max({ht(l), ht(r)}) + 1
  *
  *   descend x t | ht(t)
  *
  * Attempt to prove:
- * Case: t == nil
+ * Case: t == leaf
  *   ht(t) >= 0
  *   by definition of ht.
  * Case: t == (l, x, r)
@@ -106,45 +106,45 @@ append t1 t2 = match t1 with
  *)
 descend ∷ Tree α → Tree β
 descend t = match t with
-  | nil       → nil
+  | leaf      → leaf
   | (l, x, r) → (descend l)
 
 (**
  * This function is equivalent to
  *
- *     f t1 t2 = nil
+ *     f t1 t2 = leaf
  *
  * on trees, but costs the "leftmost depth"
  * of t1.
  *)
 descend_on_first ∷ Tree α ⨯ Tree α → Tree β
 descend_on_first t1 t2 = match t1 with
-  | nil       → nil
+  | leaf      → leaf
   | (l, x, r) → (descend_on_first l t2)
 
 (**
  * This function is equivalent to
  *
- *     f t1 t2 = nil
+ *     f t1 t2 = leaf
  *
  * on trees, but costs the "leftmost depth"
  * of t2.
  *)
 descend_on_second ∷ Tree α ⨯ Tree α → Tree β
 descend_on_second t1 t2 = match t2 with
-  | nil       → nil
+  | leaf      → leaf
   | (l, x, r) → (descend_on_second t1 l)
 
 inorder ∷ Tree α ⨯ Tree α → Tree α
 inorder t1 t2 = match t1 with
-  | nil       → t2
+  | leaf      → t2
   | (l, x, r) → (inorder l (cons x (inorder r t2)))
 
 is ∷ Tree α → Bool
 is t = match t with
-  | nil         → true
+  | leaf         → true
   | (lx, x, rx) → match rx with
-    | nil         → is lx
+    | leaf         → is lx
     | (ly, y, ry) → false
 
 (**
@@ -157,17 +157,17 @@ is t = match t with
  *)
 iter ∷ Tree α → Tree α
 iter t = match t with
-  | nil       → nil
+  | leaf      → leaf
   | (l, x, r) → (cons x (iter l))
 
 postorder ∷ Tree α ⨯ Tree α → Tree α
 postorder t1 t2 = match t1 with
-  | nil       → t2
+  | leaf      → t2
   | (l, x, r) → (postorder l (postorder r (cons x t2)))
 
 preorder ∷ Tree α ⨯ Tree α → Tree α
 preorder t1 t2 = match t1 with
-  | nil       → t2
+  | leaf      → t2
   | (l, x, r) → (cons x (preorder l (preorder r t2)))
 
 (**
@@ -184,5 +184,5 @@ preorder t1 t2 = match t1 with
  *)
 rev_append ∷ Tree α ⨯ Tree α → Tree α
 rev_append t1 t2 = match t1 with
-  | nil       → t2
+  | leaf      → t2
   | (l, x, r) → (rev_append l (cons x t2))

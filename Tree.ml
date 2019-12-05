@@ -1,5 +1,5 @@
 singleton ∷ α → Tree α
-singleton x = (nil, x, nil)
+singleton x = (leaf, x, leaf)
 
 id ∷ Tree α → Tree α
 id t = match t with | (a, b, c) → (a, b, c)
@@ -14,7 +14,7 @@ flip ∷ Tree α → Tree α
 flip t = match t with | (l, x, r) → (r, x, l)
 
 empty ∷ Tree α → Bool
-empty t = match t with | nil → true | (r, x, l) → false
+empty t = match t with | leaf → true | (r, x, l) → false
 
 clone ∷ α ⨯ Tree α → Tree α
 clone x t = (t, x, t)
@@ -24,9 +24,9 @@ clone x t = (t, x, t)
  *   contains_unordered x t | 1 * rk(t)
  *
  * Attempt to prove:
- * Case: t == nil
+ * Case: t == leaf
  *   rk(t)   >= 0
- *   rk(nil) >= 0
+ *   rk(leaf) >= 0
  *   0       >= 0
  * Case: t == (l, y, r)
  *   Case: x != y
@@ -35,7 +35,7 @@ clone x t = (t, x, t)
  *       rk((l, y, r))                         >= rk(l) + 1
  *       rk(l) + log'(|l|) + log'(|r|) + rk(r) >= rk(l) + 1
  *               log'(|l|) + log'(|r|) + rk(r) >=         1
- * !     Error, since for l == nil and r == nil we have that 0 >= 1.
+ * !     Error, since for l == leaf and r == leaf we have that 0 >= 1.
  *     Case: contains_unordered x l == false is symmetric.
  *   Case: x == y
  *     rk(t) >= 0
@@ -48,7 +48,7 @@ clone x t = (t, x, t)
  *   ...                    |     log'(    |t| + 2)
  *
  * Attempt to prove:
- * Case: t == nil
+ * Case: t == leaf
  *   log'(|t| + 2) >= 0
  *   log'(|t| + 2) >= log'(2) = 1 >= 0
  * Case: t == (l, y, r)
@@ -57,7 +57,7 @@ clone x t = (t, x, t)
  *       log'(|t|         + 2) >= log'(|l| + 2) + 1
  *       log'(|(l, y, r)| + 2) >= log'(|l| + 2) + 1
  *       log'(|l| + |r|   + 2) >= log'(|l| + 2) + 1
- * !     Error, since for l == nil and r == nil we have that 1 >= 2.
+ * !     Error, since for l == leaf and r == leaf we have that 1 >= 2.
  *     Case: contains_unordered x l == false is symmetric.
  *   Case: x == y
  *     log'(|t| + 2) >= 0
@@ -65,13 +65,13 @@ clone x t = (t, x, t)
  * -------------------------------------------------------------------
  *
  * Attempt to annotate with new potential `ht` (short for "height"):
- *   ht(nil)      := 1
+ *   ht(leaf)      := 1
  *   ht((l, _, r) := max({ht(l), ht(r)}) + 1
  *
  *   contains_unordered x t | ht(t)
  *
  * Attempt to prove:
- * Case: t == nil
+ * Case: t == leaf
  *   ht(t) >= 0
  *   by definition of ht.
  * Case: t == (l, y, r)
@@ -92,7 +92,7 @@ clone x t = (t, x, t)
  *)
 contains_unordered ∷ Eq α ⇒ α ⨯ Tree α → Bool
 contains_unordered x t = match t with
-    | nil       → false
+    | leaf      → false
     | (l, y, r) → if x == y
         then true
         else (Bool.or (contains_unordered x l) (contains_unordered x r))
@@ -114,9 +114,9 @@ contains_unordered x t = match t with
  *   iter_both t | 1 * rk(t)
  *
  * Attempt to prove:
- * Case: t == nil
+ * Case: t == leaf
  *   rk(t)   >= 0
- *   rk(nil) >= 0
+ *   rk(leaf) >= 0
  *   0       >= 0
  * Case: t == (l, x, r)
  *   rk(t)                                 >= rk((iter_both l, x, iter_both r)) + 1
@@ -124,5 +124,5 @@ contains_unordered x t = match t with
  *)
 iter ∷ Tree α → Tree α
 iter t = match t with
-  | nil       → nil
+  | leaf      → leaf
   | (l, x, r) → (iter l, x, iter r)

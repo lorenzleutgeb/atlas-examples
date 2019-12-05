@@ -4,7 +4,7 @@ f l x r = (l, x, r);
 g ∷ Tree α ⨯ Tree α → Tree α
 g t e1 =
   match t with
-    | nil       → e1
+    | leaf      → e1
     | (l, x, r) → (l, x, r);
 
 h ∷  Tree α ⨯ Tree α → Tree α
@@ -16,18 +16,18 @@ i x y = x < y;
 j ∷ Bool → Tree α
 j x =
   if x
-    then nil
-    else nil;
+    then leaf
+    else leaf;
 
 k ∷ Ord α ⇒ α ⨯ α ⨯ β → Tree β
 k x y z =
   let p = x < y
   in
   if p
-    then nil
+    then leaf
     else
-      let l = nil in
-      let r = nil
+      let l = leaf in
+      let r = leaf
       in
       (l, z, r);
 
@@ -37,9 +37,9 @@ l1 x y t a =
   let p = x < y
   in
   if p
-    then nil
+    then leaf
     else
-      let n = nil
+      let n = leaf
       in
       (t, a, n);
 

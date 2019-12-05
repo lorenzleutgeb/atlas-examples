@@ -11,28 +11,28 @@
 (**
  * Original definition:
  *
- *   is_root h = (case h of nil → true | (l, x, r) → r == nil)
+ *   is_root h = (case h of leaf → true | (l, x, r) → r == leaf)
  *)
 is_root ∷ Tree α → Bool
 is_root h = match h with
-  | nil       → true
+  | leaf      → true
   | (l, x, r) → match r with
-    | nil          → true
+    | leaf          → true
     | (lr, xr, rr) → false
 
 (**
  * Original definition:
  *
- *   pheap nil = true
+ *   pheap leaf = true
  *   pheap (l, x, r) = (pheap l /\ pheap r /\ (\forall y \in set_tree l. x <= y))
  *)
 pheap ∷ Ord α ⇒ Tree α → Bool
 pheap h = match h with
-  | nil → true
+  | leaf → true
   | (l, x, r) → (Bool.and (Bool.and (pheap l) (pheap r)) (all_leq l x))
 
 all_leq t x = match t with
-  | nil → true
+  | leaf → true
   | (l, y, r) → if y > x
     then false
     else (Bool.and (all_leq l x) (all_leq r x))
@@ -40,15 +40,15 @@ all_leq t x = match t with
 (**
  * Original definition:
  *
- *   link nil = nil
- *   link (lx, x, nil) = (lx, x, nil)
+ *   link leaf = leaf
+ *   link (lx, x, leaf) = (lx, x, leaf)
  *   link (lx, x, (ly, y, ry)) = (if x < y then ((ly, y, lx), x, ry) else ((lx, x, ly), y, ry))
  *)
 link ∷ Ord α ⇒ Tree α → Tree α
 link h = match h with
-  | nil → nil
+  | leaf → leaf
   | (lx, x, rx) → match rx with
-    | nil → (lx, x, nil)
+    | leaf → (lx, x, leaf)
     | (ly, y, ry) → if x < y
       then ((ly, y, lx), x, ry)
       else ((lx, x, ly), y, ry)
@@ -56,7 +56,7 @@ link h = match h with
 (**
  * Original definition:
  *
- *   insert x h = merge (nil, x, nil) h
+ *   insert x h = merge (leaf, x, leaf) h
  *)
 insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 insert x h = (merge (Tree.singleton x) h)
@@ -64,25 +64,25 @@ insert x h = (merge (Tree.singleton x) h)
 (**
  * Original definition:
  *
- *   merge nil h = h
- *   merge h nil = h
- *   merge (lx, x, nil) (ly, y, nil) = link (lx, x, (ly, y, nil))
+ *   merge leaf h = h
+ *   merge h leaf = h
+ *   merge (lx, x, leaf) (ly, y, leaf) = link (lx, x, (ly, y, leaf))
  *
  * But note that we cannot restrict ourselves to the arguments having
- * a right-subtree equal to nil.
+ * a right-subtree equal to leaf.
  *
  * Proof of a logarithmic upper bound for merge, in analogy to Lemma 8.4:
  *
  * As potential function we take:
  *
- *   Phi nil       := 0
+ *   Phi leaf       := 0
  *   Phi (l, _, r) := Phi l + Phi r + log' |l| + log' |r|
  *
  * where
  *
- *   |nil| := 1    and    |(l, _, r)| := |l| + |r|
+ *   |leaf| := 1    and    |(l, _, r)| := |l| + |r|
  *
- * Let h1 := (lx, x, nil) and h2 := (ly, y, nil)
+ * Let h1 := (lx, x, leaf) and h2 := (ly, y, leaf)
  *
  * We want to show
  *
@@ -94,8 +94,8 @@ insert x h = (merge (Tree.singleton x) h)
  *
  *     Phi (merge h1 h2)
  *   = Phi (link (lx, x, h2))                                       (def. merge)
- *   = Phi ((ly, y, lx), x, nil)                                    (w.l.o.g. by def. link)
- *   = Phi (ly, y, lx) + Phi nil + log' |(ly, y, lx)| + log' |nil|  (def. Phi)
+ *   = Phi ((ly, y, lx), x, leaf)                                    (w.l.o.g. by def. link)
+ *   = Phi (ly, y, lx) + Phi leaf + log' |(ly, y, lx)| + log' |leaf|  (def. Phi)
  *   = Phi (ly, y, lx) + 0       + log' |(ly, y, lx)| + 0           (def. Phi, |_|)
  *   = Phi (ly, y, lx) + log' (|ly| + |lx|)                         (def. |_|)
  *   = Phi ly + Phi lx + log' |lx| + log' |ly| + log' (|ly| + |lx|) (def. Phi)
@@ -104,14 +104,14 @@ insert x h = (merge (Tree.singleton x) h)
  *
  *      Phi (merge h1 h2) - Phi h1 - Phi h2
  *    = Phi ly + Phi lx + log' |lx| + log' |ly| + log' (|ly + |lx|) (def. Phi)
- *    - Phi lx - Phi nil - log' |lx| - log' |nil|
- *    - Phi ly - Phi nil - log' |ly| - log' |nil|
+ *    - Phi lx - Phi leaf - log' |lx| - log' |leaf|
+ *    - Phi ly - Phi leaf - log' |ly| - log' |leaf|
  *    = ~                                                           (def. Phi, |_|)
  *    - Phi lx - 0       - log' |lx| - 0
  *    - Phi ly - 0       - log' |ly| - 0
  *    = log' (|ly| + |lx|)
  *   <= log' (|lx| + |ly| + 2)                    (monotone log')
- *    = log' (|lx| + |nil| + |ly| + |nil|)
+ *    = log' (|lx| + |leaf| + |ly| + |leaf|)
  *    = log' (|h1| + |h2|)
  *
  * For the more general case:
@@ -127,15 +127,15 @@ insert x h = (merge (Tree.singleton x) h)
  * First, observe following equality
  *
  *     Phi (merge h1 h2)
- *   = Phi (link (lx, x, (ly, y, nil)))    (def. merge)
+ *   = Phi (link (lx, x, (ly, y, leaf)))    (def. merge)
  *   Case x < y:
- *     = Phi ((ly, y, lx), x, nil)                                    (def. link)
- *     = Phi (ly, y, lx) + Phi nil + log' |(ly, y, lx)| + log' |nil|  (def. Phi)
+ *     = Phi ((ly, y, lx), x, leaf)                                    (def. link)
+ *     = Phi (ly, y, lx) + Phi leaf + log' |(ly, y, lx)| + log' |leaf|  (def. Phi)
  *     = Phi (ly, y, lx) + 0       + log' (|ly| + |lx|) + 0           (def. Phi, |_|)
  *     = Phi ly + Phi lx + log' |lx| + log' |ly| + log' (|ly| + |lx|) (def. Phi)
  *   Case x >= y:
- *     = Phi ((lx, x, ly), y, nil)                                    (def. link)
- *     = Phi (lx, x, ly) + Phi nil + log' |(lx, x, ly)| + log' |nil|  (def. Phi)
+ *     = Phi ((lx, x, ly), y, leaf)                                    (def. link)
+ *     = Phi (lx, x, ly) + Phi leaf + log' |(lx, x, ly)| + log' |leaf|  (def. Phi)
  *     = Phi (lx, x, ly) + 0       + log' (|lx| + |ly|) + 0           (def. Phi, |_|)
  *     = Phi lx + Phi ly + log' |ly| + log' |lx| + log' (|lx| + |ly|) (def. Phi)
  *   = Phi lx + Phi ly + log' |lx| + log' |ly| + log' (|lx| + |ly|) (comm. +)
@@ -153,32 +153,32 @@ insert x h = (merge (Tree.singleton x) h)
  *)
 merge ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α
 merge h1 h2 = match h1 with
-  | nil → h2
+  | leaf → h2
   | (lx, x, rx) → match h2 with
-    | nil         → (lx, x, rx)
-    | (ly, y, ry) → (link (lx, x, (ly, y, nil)))
+    | leaf         → (lx, x, rx)
+    | (ly, y, ry) → (link (lx, x, (ly, y, leaf)))
 
 del_min ∷ Ord α ⇒ Tree α → Tree α
 del_min h = match h with
-  | nil       → nil
+  | leaf      → leaf
   | (l, x, r) → (pass2 (pass1 l))
 
 pass1 ∷ Ord α ⇒ Tree α → Tree α
 pass1 h = match h with
-  | nil → nil
+  | leaf → leaf
   | (lx, x, rx) → match rx with
-    | nil → (lx, x, nil)
+    | leaf → (lx, x, leaf)
     | (ly, y, ry) → (link (lx, x, (ly, y, pass1 ry)))
 
 pass2 ∷ Ord α ⇒ Tree α → Tree α
 pass2 h = match h with
-  | nil → nil
+  | leaf → leaf
   | (l, x, r) → (link (l, x, pass2 r))
 
 merge_pairs ∷ Ord α ⇒ Tree α → Tree α
 merge_pairs h = match h with
-  | nil → nil
+  | leaf → leaf
   | (lx, x, rx) → match rx with
-    | nil         → (lx, x, nil)
+    | leaf         → (lx, x, leaf)
     | (ly, y, ry) → (link (link (lx, x, (ly, y, merge_pairs ry))))
 

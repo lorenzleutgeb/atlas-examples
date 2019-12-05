@@ -33,9 +33,9 @@ empty_3 t = (let s = t in (Tree.empty s))
 
 same_root ∷ (Eq α, Eq (Tree α)) ⇒ Tree α ⨯ Tree α → Bool
 same_root t1 t2 = match t1 with
-  | nil → (if t2 == nil then true else false)
+  | leaf → (if t2 == leaf then true else false)
   | (lx, x, rx) → match t2 with
-    | nil → false
+    | leaf → false
     | (ly, y, ry) → (if y == x then true else false)
 
 empty_4 ∷ Tree α ⨯ Tree β → Bool
@@ -56,4 +56,4 @@ same_root_obviously t = (same_root t t)
  *   first_nonempty_and_second_empty t1 t2 | log(|t2| + 2) + log(2 · |t2| + 2) + 1 → 0
  *)
 first_nonempty_and_second_empty ∷ Tree α ⨯ Tree β → Bool
-first_nonempty_and_second_empty t1 t2 = match t1 with | (l, x, r) → Tree.empty t2 | nil → false
+first_nonempty_and_second_empty t1 t2 = match t1 with | (l, x, r) → Tree.empty t2 | leaf → false

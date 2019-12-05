@@ -1,12 +1,12 @@
 cons ∷ α ⨯ Tree α → Tree α
-cons x t = (nil, x, t)
+cons x t = (leaf, x, t)
 
 (**
- * In our setting the tail of nil is nil.
+ * In our setting the tail of leaf is leaf.
  *)
 tl ∷ Tree α → Tree α
 tl t = match t with
-  | nil       → nil
+  | leaf      → leaf
   | (l, x, r) → r
 
 (**
@@ -26,27 +26,27 @@ tl t = match t with
  *)
 append ∷ Tree α ⨯ Tree α → Tree α
 append t1 t2 = match t1 with
-  | nil       → t2
+  | leaf      → t2
   | (l, x, r) → (cons x (append r t2))
 
 (**
  * This function is equivalent to
  *
- *     f t = nil
+ *     f t = leaf
  *
  * on trees, but costs the "rightmost depth"
  * of t.
  *)
 descend ∷ Tree α → Tree β
 descend t = match t with
-  | nil       → nil
+  | leaf      → leaf
   | (l, m, r) → (descend r)
 
 is ∷ Tree α → Bool
 is t = match t with
-  | nil         → true
+  | leaf         → true
   | (lx, x, rx) → match lx with
-    | nil         → is rx
+    | leaf         → is rx
     | (ly, y, ry) → false
 
 (**
@@ -62,7 +62,7 @@ is t = match t with
  *)
 iter ∷ Tree α → Tree α
 iter t = match t with
-  | nil       → nil
+  | leaf      → leaf
   | (l, x, r) → (cons x (iter r))
 
 (**
@@ -79,5 +79,5 @@ iter t = match t with
  *)
 rev_append ∷ Tree α ⨯ Tree α → Tree α
 rev_append t1 t2 = match t1 with
-  | nil       → t2
+  | leaf      → t2
   | (l, x, r) → (rev_append r (cons x t2))
