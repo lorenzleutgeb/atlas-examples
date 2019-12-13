@@ -46,9 +46,9 @@ all_leq t x = match t with
  *)
 link ∷ Ord α ⇒ Tree α → Tree α
 link h = match h with
-  | leaf → leaf
+  | leaf        → leaf
   | (lx, x, rx) → match rx with
-    | leaf → (lx, x, leaf)
+    | leaf        → (lx, x, leaf)
     | (ly, y, ry) → if x < y
       then ((ly, y, lx), x, ry)
       else ((lx, x, ly), y, ry)

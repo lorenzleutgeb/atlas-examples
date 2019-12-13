@@ -2,19 +2,29 @@ singleton ∷ α → Tree α
 singleton x = (leaf, x, leaf)
 
 id ∷ Tree α → Tree α
-id t = match t with | (a, b, c) → (a, b, c)
+id t = match t with
+    | leaf      → leaf
+    | (a, b, c) → (a, b, c)
 
 left ∷ Tree α → Tree α
-left t = match t with | (l, x, r) → l
+left t = match t with
+    | leaf      → leaf
+    | (l, x, r) → l
 
 right ∷ Tree α → Tree α
-right t = match t with | (l, x, r) → r
+right t = match t with
+    | leaf      → leaf
+    | (l, x, r) → r
 
 flip ∷ Tree α → Tree α
-flip t = match t with | (l, x, r) → (r, x, l)
+flip t = match t with
+    | leaf      → leaf
+    | (l, x, r) → (r, x, l)
 
 empty ∷ Tree α → Bool
-empty t = match t with | leaf → true | (r, x, l) → false
+empty t = match t with
+    | leaf      → true
+    | (r, x, l) → false
 
 clone ∷ α ⨯ Tree α → Tree α
 clone x t = (t, x, t)

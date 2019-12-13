@@ -56,4 +56,6 @@ same_root_obviously t = (same_root t t)
  *   first_nonempty_and_second_empty t1 t2 | log(|t2| + 2) + log(2 · |t2| + 2) + 1 → 0
  *)
 first_nonempty_and_second_empty ∷ Tree α ⨯ Tree β → Bool
-first_nonempty_and_second_empty t1 t2 = match t1 with | (l, x, r) → Tree.empty t2 | leaf → false
+first_nonempty_and_second_empty t1 t2 = match t1 with
+  | leaf      → false
+  | (l, x, r) → (Tree.empty t2)
