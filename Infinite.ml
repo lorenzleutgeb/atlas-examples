@@ -51,6 +51,12 @@ infinite_11 t = (let s = t in (infinite_11 s))
 infinite_12 ∷ α ⨯ Tree α → Tree α
 infinite_12 x t = (let s = t in (infinite_12 x s, x, leaf))
 
+infinite_13 ∷ α ⨯ Tree α ⨯ Tree α → Tree α
+infinite_13 x t u = (let s = t in (infinite_13 x s leaf, x, u))
+
+infinite_14 ∷ α → Tree α
+infinite_14 x = (infinite_14 x, x, leaf)
+
 (**
  * The following is an interesting case, but the current implementation cannot type mutual recursion.
  *)
