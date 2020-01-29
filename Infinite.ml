@@ -64,3 +64,6 @@ infinite_14 x = (infinite_14 x, x, leaf)
 infinite_na x t = (infinite_nb x t, x, leaf)
 infinite_nb x t = (infinite_na x t, x, leaf)
 *)
+
+infinite_15 ∷ Tree α → Tree α
+infinite_15 t = (let u = t in (infinite_15 u))
