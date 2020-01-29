@@ -59,3 +59,12 @@ first_nonempty_and_second_empty ∷ Tree α ⨯ Tree β → Bool
 first_nonempty_and_second_empty t1 t2 = match t1 with
   | leaf      → false
   | (l, x, r) → (Tree.empty t2)
+
+let_in_let_shared ∷ Tree α → Bool
+let_in_let_shared t = let s = (let u = t in t) in (Tree.empty s)
+
+let_in_let ∷ Tree α → Bool
+let_in_let t = let s = (let u = t in u) in (Tree.empty s)
+
+cf_in_cf ∷ Tree α ⨯ α ⨯ Tree α ⨯ α ⨯ Tree α → Bool
+cf_in_cf t x v y w = let s = (let u = t in (u, y, w)) in (Tree.empty (s, x, v))
