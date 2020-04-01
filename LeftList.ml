@@ -142,9 +142,9 @@ inorder t1 t2 = match t1 with
 
 is ∷ Tree α → Bool
 is t = match t with
-  | leaf         → true
+  | leaf        → true
   | (lx, x, rx) → match rx with
-    | leaf         → is lx
+    | leaf        → is lx
     | (ly, y, ry) → false
 
 (**

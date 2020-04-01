@@ -44,9 +44,9 @@ descend t = match t with
 
 is ∷ Tree α → Bool
 is t = match t with
-  | leaf         → true
+  | leaf        → true
   | (lx, x, rx) → match lx with
-    | leaf         → is rx
+    | leaf        → is rx
     | (ly, y, ry) → false
 
 (**
