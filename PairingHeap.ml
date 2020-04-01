@@ -155,7 +155,7 @@ merge ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α
 merge h1 h2 = match h1 with
   | leaf → h2
   | (lx, x, rx) → match h2 with
-    | leaf         → (lx, x, rx)
+    | leaf        → (lx, x, rx)
     | (ly, y, ry) → (link (lx, x, (ly, y, leaf)))
 
 del_min ∷ Ord α ⇒ Tree α → Tree α
@@ -165,20 +165,20 @@ del_min h = match h with
 
 pass1 ∷ Ord α ⇒ Tree α → Tree α
 pass1 h = match h with
-  | leaf → leaf
+  | leaf        → leaf
   | (lx, x, rx) → match rx with
-    | leaf → (lx, x, leaf)
+    | leaf        → (lx, x, leaf)
     | (ly, y, ry) → (link (lx, x, (ly, y, pass1 ry)))
 
 pass2 ∷ Ord α ⇒ Tree α → Tree α
 pass2 h = match h with
-  | leaf → leaf
+  | leaf      → leaf
   | (l, x, r) → (link (l, x, pass2 r))
 
 merge_pairs ∷ Ord α ⇒ Tree α → Tree α
 merge_pairs h = match h with
-  | leaf → leaf
+  | leaf        → leaf
   | (lx, x, rx) → match rx with
-    | leaf         → (lx, x, leaf)
+    | leaf        → (lx, x, leaf)
     | (ly, y, ry) → (link (link (lx, x, (ly, y, merge_pairs ry))))
 
