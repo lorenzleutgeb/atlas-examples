@@ -16,9 +16,11 @@ empty_2 t = (empty_1 t)
 empty_3 ∷ Tree α → Bool
 empty_3 t = (let s = t in (Tree.empty s))
 
-same_root ∷ (Eq α, Eq (Tree α)) ⇒ Tree α ⨯ Tree α → Bool
+same_root ∷ Eq α ⇒ Tree α ⨯ Tree α → Bool
 same_root t1 t2 = match t1 with
-  | leaf → (if t2 == leaf then true else false)
+  | leaf → match t2 with
+    | leaf → true
+    | (t2l, t2x, t2r) → false
   | (lx, x, rx) → match t2 with
     | leaf → false
     | (ly, y, ry) → (if y == x then true else false)
@@ -31,7 +33,7 @@ empty_4 t1 t2 = (Bool.or (Tree.empty t1) (Tree.empty t2))
  *
  *   same_root_obviously t | log(|t| + 2) + log(2 · |t| + 2) + 1 → 0
  *)
-same_root_obviously ∷ (Eq α, Eq (Tree α)) ⇒ Tree α → Bool
+same_root_obviously ∷ Eq α ⇒ Tree α → Bool
 same_root_obviously t = (same_root t t)
 
 first_nonempty_and_second_empty ∷ Tree α ⨯ Tree β → Bool
