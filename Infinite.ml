@@ -57,14 +57,6 @@ infinite_13 x t u = (let s = t in (infinite_13 x s leaf, x, u))
 infinite_14 ∷ α → Tree α
 infinite_14 x = (infinite_14 x, x, leaf)
 
-(**
- * The following is an interesting case, but the current implementation cannot type mutual recursion.
- *)
-(*
-infinite_na x t = (infinite_nb x t, x, leaf)
-infinite_nb x t = (infinite_na x t, x, leaf)
-*)
-
 infinite_15 ∷ Tree α → Tree α
 infinite_15 t = (let u = t in (infinite_15 u))
 
@@ -76,3 +68,9 @@ infinite_17 x = (infinite_17 x)
 
 infinite_18 :: Tree α -> Tree β
 infinite_18 x = (infinite_18 x)
+
+infinite_19a :: α ⨯ β → Tree α
+infinite_19a x t = (infinite_19b x t, x, leaf)
+
+infinite_19b :: α ⨯ β → Tree α
+infinite_19b x t = (infinite_19a x t, x, leaf)
