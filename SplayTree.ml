@@ -1,7 +1,3 @@
-(* This variant of splay does not type anymore as of 2020-04-16
- * (type constraints).
- *)
-(*
 splay_eq ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α → Tree α
 splay_eq a t = match t with
   | leaf        → leaf
@@ -14,12 +10,12 @@ splay_eq a t = match t with
           then (bl, a, (br, c, cr))
           else if a < b
             then if bl == leaf
-              then (bl, b, (br, c, cr))
+              then (leaf, b, (br, c, cr))
               else match splay_eq a bl with
                 | leaf          → leaf (* TODO: undefined *)
                 | (al, a', ar) → (al, a', (ar, b, (br, c, cr)))
             else if br == leaf
-              then (bl, b, (br, c, cr))
+              then (bl, b, (leaf, c, cr))
               else match splay_eq a br with
                 | leaf          → leaf (* TODO: undefined *)
                 | (al, a', ar) → ((bl, b, al), a', (ar, c, cr))
@@ -38,7 +34,45 @@ splay_eq a t = match t with
               else match splay_eq a br with
                 | leaf         → leaf (* TODO: undefined *)
                 | (al, x, xa) → (((cl, c, bl), b, al), x, xa)
-*)
+
+(* A variant of splay_eq where the zig-zig case uses Georg Moser's LNF variant.
+ *)
+splay_eq_glnf ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α → Tree α
+splay_eq_glnf a t = match t with
+  | leaf        → leaf
+  | (cl, c, cr) → if a == c
+    then (cl, c, cr)
+    else if a < c
+      then match cl with
+        | leaf         → (leaf, c, cr)
+        | (bl, b, br) → if a == b
+          then (bl, a, (br, c, cr))
+          else if a < b
+            then if bl == leaf
+              then (leaf, b, (br, c, cr))
+              else match splay_eq_glnf a bl with
+                | leaf         → leaf (* TODO: undefined *)
+                | (al, a', ar) → (let t'' = (let t''' = (br, c, cr) in (ar, b, t''')) in (al, a, t''))
+            else if br == leaf
+              then (bl, b, (leaf, c, cr))
+              else match splay_eq_glnf a br with
+                | leaf          → leaf (* TODO: undefined *)
+                | (al, a', ar) → ((bl, b, al), a', (ar, c, cr))
+      else match cr with
+        | leaf         → (cl, c, leaf)
+        | (bl, b, br) → if a == b
+          then ((cl, c, bl), a, br)
+          else if a < b
+            then if bl == leaf
+              then ((cl, c, bl), b, br)
+              else match splay_eq_glnf a bl with
+                | leaf          → leaf (* TODO: undefined *)
+                | (al, a', ar) → ((cl, c, al), a', (ar, b, br))
+            else if br == leaf
+              then ((cl, c, bl), b, br)
+              else match splay_eq_glnf a br with
+                | leaf         → leaf (* TODO: undefined *)
+                | (al, x, xa) → (((cl, c, bl), b, al), x, xa)
 
 splay ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 splay a t = match t with
@@ -80,10 +114,7 @@ splay a t = match t with
 (* We make the assumption that a < b < c and use this to simplify splay.
  * Since we do not need to compare elements anymore, we can drop the constraint
  * Ord α.
- *
- * This definition does not type anymore as of 2020-04-16 (type constraints).
  *)
-(*
 splay_eq_zigzig ∷ Eq (Tree α) ⇒ α ⨯ Tree α → Tree α
 splay_eq_zigzig a t = match t with
     | leaf        → leaf
@@ -94,7 +125,6 @@ splay_eq_zigzig a t = match t with
             else match splay_eq_zigzig a bl with
                 | leaf         → leaf (* TODO: undefined *)
                 | (al, a', ar) → (al, a', (ar, b, (br, c, cr)))
- *)
 
 (* We make the assumption that a < b < c and use this to simplify splay.
  * Since we do not need to compare elements anymore, we can drop the constraint
@@ -113,10 +143,6 @@ splay_zigzig a t = match t with
                 | leaf         → leaf (* TODO: undefined *)
                 | (al, a', ar) → (al, a', (ar, b, (br, c, cr)))
 
-(* This variant of splay_max does not type anymore as of 2020-04-16
- * (type constraints).
- *)
-(*
 splay_max_eq ∷ Eq (Tree α) ⇒ Tree α → Tree α
 splay_max_eq t = match t with
     | leaf      → leaf
@@ -127,7 +153,6 @@ splay_max_eq t = match t with
             else match splay_max_eq rr with
                 | leaf          → leaf (* TODO: undefined *)
                 | (rrl, x, xa)  → (((l, b, rl), c, rrl), x, xa)
-*)
 
 splay_max ∷ Tree α → Tree α
 splay_max t = match t with
@@ -140,10 +165,6 @@ splay_max t = match t with
                 | leaf          → leaf (* TODO: undefined *)
                 | (rrl', x, xa) → (((l, b, rl), c, rrl'), x, xa)
 
-(* This variant of delete does not type anymore as of 2020-04-16
- * (type constraints).
- *)
-(*
 delete_eq ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α → Tree α
 delete_eq a t = if t == leaf
   then leaf
@@ -156,7 +177,6 @@ delete_eq a t = if t == leaf
           | leaf        → leaf (* TODO: undefined *)
           | (l', m, r') → (l', m, r)
       else (l, a', r)
-*)
 
 delete ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 delete a t = match t with
@@ -171,10 +191,6 @@ delete a t = match t with
           | (ll', m, lr') → (ll', m, r)
       else (l, a', r)
 
-(* This variant of insert does not type anymore as of 2020-04-16
- * (type constraints).
- *)
-(*
 insert_eq ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α → Tree α
 insert_eq a t = if t == leaf
   then (leaf, a, leaf)
@@ -185,7 +201,6 @@ insert_eq a t = if t == leaf
       else if a < a'
         then (l, a, (leaf, a', r))
         else ((l, a', leaf), a, r)
-*)
 
 insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 insert a t = match t with
@@ -198,17 +213,12 @@ insert a t = match t with
         then (l, a, (leaf, a', r))
         else ((l, a', leaf), a, r)
 
-(* This variant of contains does not type anymore as of 2020-04-16
- * (type constraints).
- *)
-(*
 contains_eq ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α → Bool
 contains_eq a t = match t with
   | leaf      → false
   | (l, x, r) → match splay_eq a (l, x, r) with
     | leaf         → false
     | (l2, x2, r2) → (x2 == a)
-*)
 
 contains ∷ Ord α ⇒ α ⨯ Tree α → Bool
 contains a t = match t with
