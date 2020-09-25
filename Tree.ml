@@ -6,6 +6,11 @@ id t = match t with
     | leaf      → leaf
     | (a, b, c) → (a, b, c)
 
+id_let ∷ Tree α → Tree α
+id_let t = match t with
+    | leaf      → leaf
+    | (a, b, c) → let t' = (a, b, c) in t'
+
 left ∷ Tree α → Tree α
 left t = match t with
     | leaf      → leaf
