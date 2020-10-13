@@ -153,7 +153,7 @@ insert x h = (merge (Tree.singleton x) h)
  *)
 merge ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α
 merge h1 h2 = match h1 with
-  | leaf → h2
+  | leaf        → h2
   | (lx, x, rx) → match h2 with
     | leaf        → (lx, x, rx)
     | (ly, y, ry) → (link (lx, x, (ly, y, leaf)))
@@ -182,3 +182,4 @@ merge_pairs h = match h with
     | leaf        → (lx, x, leaf)
     | (ly, y, ry) → (link (link (lx, x, (ly, y, merge_pairs ry))))
 
+(* TODO: merge_pairs with link calls inlined *)

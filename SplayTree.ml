@@ -5,7 +5,7 @@ splay_eq a t = match t with
     then (cl, c, cr)
     else if a < c
       then match cl with
-        | leaf         → (leaf, c, cr)
+        | leaf        → (leaf, c, cr)
         | (bl, b, br) → if a == b
           then (bl, a, (br, c, cr))
           else if a < b
@@ -13,27 +13,27 @@ splay_eq a t = match t with
               then (leaf, b, (br, c, cr))
               else match splay_eq a bl with
                 | leaf          → leaf (* TODO: undefined *)
-                | (al, a', ar) → (al, a', (ar, b, (br, c, cr)))
+                | (al, a', ar) → (al, a', (ar, b, (br, c, cr))) (* zig zig *)
             else if br == leaf
               then (bl, b, (leaf, c, cr))
               else match splay_eq a br with
                 | leaf          → leaf (* TODO: undefined *)
-                | (al, a', ar) → ((bl, b, al), a', (ar, c, cr))
+                | (al, a', ar) → ((bl, b, al), a', (ar, c, cr)) (* zig zag *)
       else match cr with
-        | leaf         → (cl, c, leaf)
+        | leaf        → (cl, c, leaf)
         | (bl, b, br) → if a == b
           then ((cl, c, bl), a, br)
           else if a < b
             then if bl == leaf
-              then ((cl, c, bl), b, br)
+              then ((cl, c, leaf), b, br)
               else match splay_eq a bl with
-                | leaf          → leaf (* TODO: undefined *)
-                | (al, a', ar) → ((cl, c, al), a', (ar, b, br))
+                | leaf         → leaf (* TODO: undefined *)
+                | (al, a', ar) → ((cl, c, al), a', (ar, b, br)) (* zag zig *)
             else if br == leaf
-              then ((cl, c, bl), b, br)
+              then ((cl, c, bl), b, leaf)
               else match splay_eq a br with
                 | leaf         → leaf (* TODO: undefined *)
-                | (al, x, xa) → (((cl, c, bl), b, al), x, xa)
+                | (al, x, xa) → (((cl, c, bl), b, al), x, xa) (* zag zag *)
 
 (* A variant of splay_eq where the zig-zig case uses Georg Moser's LNF variant.
  *)
@@ -44,7 +44,7 @@ splay_eq_glnf a t = match t with
     then (cl, c, cr)
     else if a < c
       then match cl with
-        | leaf         → (leaf, c, cr)
+        | leaf        → (leaf, c, cr)
         | (bl, b, br) → if a == b
           then (bl, a, (br, c, cr))
           else if a < b
@@ -56,22 +56,22 @@ splay_eq_glnf a t = match t with
             else if br == leaf
               then (bl, b, (leaf, c, cr))
               else match splay_eq_glnf a br with
-                | leaf          → leaf (* TODO: undefined *)
+                | leaf         → leaf (* TODO: undefined *)
                 | (al, a', ar) → ((bl, b, al), a', (ar, c, cr))
       else match cr with
-        | leaf         → (cl, c, leaf)
+        | leaf        → (cl, c, leaf)
         | (bl, b, br) → if a == b
           then ((cl, c, bl), a, br)
           else if a < b
             then if bl == leaf
-              then ((cl, c, bl), b, br)
+              then ((cl, c, leaf), b, br)
               else match splay_eq_glnf a bl with
-                | leaf          → leaf (* TODO: undefined *)
+                | leaf         → leaf (* TODO: undefined *)
                 | (al, a', ar) → ((cl, c, al), a', (ar, b, br))
             else if br == leaf
-              then ((cl, c, bl), b, br)
+              then ((cl, c, bl), b, leaf)
               else match splay_eq_glnf a br with
-                | leaf         → leaf (* TODO: undefined *)
+                | leaf        → leaf (* TODO: undefined *)
                 | (al, x, xa) → (((cl, c, bl), b, al), x, xa)
 
 splay ∷ Ord α ⇒ α ⨯ Tree α → Tree α
@@ -147,7 +147,7 @@ splay_max_eq ∷ Eq (Tree α) ⇒ Tree α → Tree α
 splay_max_eq t = match t with
     | leaf      → leaf
     | (l, b, r) → match r with
-        | leaf         → (l, b, leaf)
+        | leaf        → (l, b, leaf)
         | (rl, c, rr) → if rr == leaf
             then ((l, b, rl), c, leaf)
             else match splay_max_eq rr with
@@ -158,7 +158,7 @@ splay_max ∷ Tree α → Tree α
 splay_max t = match t with
     | leaf      → leaf
     | (l, b, r) → match r with
-        | leaf         → (l, b, leaf)
+        | leaf        → (l, b, leaf)
         | (rl, c, rr) → match rr with
             | leaf            →  ((l, b, rl), c, leaf)
             | (rrl, rrx, rrr) → match splay_max (rrl, rrx, rrr) with

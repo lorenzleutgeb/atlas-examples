@@ -1,6 +1,11 @@
 singleton ∷ α → Tree α
 singleton x = (leaf, x, leaf)
 
+singleton_let ∷ α → Tree α
+singleton_let x = (let n = leaf in
+  (let m = leaf in (n, x, m))
+)
+
 id ∷ Tree α → Tree α
 id t = match t with
     | leaf      → leaf
