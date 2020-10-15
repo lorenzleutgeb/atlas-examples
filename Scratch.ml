@@ -49,3 +49,7 @@ let_in_let t = let s = (let u = t in u) in (Tree.empty s)
 
 cf_in_cf ∷ Tree α ⨯ α ⨯ Tree α ⨯ α ⨯ Tree α → Bool
 cf_in_cf t x v y w = let s = (let u = t in (u, y, w)) in (Tree.empty (s, x, v))
+
+lnf al a ar b br c cr = (let t' = (br, c, cr) in (let t'' = (ar, b, t') in (al, a, t'')))
+
+air t a = (let u = leaf in (t, a, u))

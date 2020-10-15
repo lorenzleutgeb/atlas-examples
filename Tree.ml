@@ -11,6 +11,13 @@ id t = match t with
     | leaf      → leaf
     | (a, b, c) → (a, b, c)
 
+id_match ∷ Tree α → Tree α
+id_match t = match t with
+    | leaf      → leaf
+    | (a, b, c) → match a with
+      | leaf         → (leaf, b, c)
+      | (aa, ab, ac) → ((aa, ab, ac), b, c)
+
 id_let ∷ Tree α → Tree α
 id_let t = match t with
     | leaf      → leaf
