@@ -10,14 +10,14 @@ splay_eq a t = match t with
           then (bl, a, (br, c, cr))
           else if a < b
             then if bl == leaf
-              then (leaf, b, (br, c, cr))
+              then (bl, b, (br, c, cr))
               else match splay_eq a bl with
-                | leaf          → leaf (* TODO: undefined *)
+                | leaf         → leaf (* TODO: undefined *)
                 | (al, a', ar) → (al, a', (ar, b, (br, c, cr))) (* zig zig *)
             else if br == leaf
-              then (bl, b, (leaf, c, cr))
+              then (bl, b, (br, c, cr))
               else match splay_eq a br with
-                | leaf          → leaf (* TODO: undefined *)
+                | leaf         → leaf (* TODO: undefined *)
                 | (al, a', ar) → ((bl, b, al), a', (ar, c, cr)) (* zig zag *)
       else match cr with
         | leaf        → (cl, c, leaf)
@@ -25,12 +25,12 @@ splay_eq a t = match t with
           then ((cl, c, bl), a, br)
           else if a < b
             then if bl == leaf
-              then ((cl, c, leaf), b, br)
+              then ((cl, c, bl), b, br)
               else match splay_eq a bl with
                 | leaf         → leaf (* TODO: undefined *)
                 | (al, a', ar) → ((cl, c, al), a', (ar, b, br)) (* zag zig *)
             else if br == leaf
-              then ((cl, c, bl), b, leaf)
+              then ((cl, c, bl), b, br)
               else match splay_eq a br with
                 | leaf         → leaf (* TODO: undefined *)
                 | (al, x, xa) → (((cl, c, bl), b, al), x, xa) (* zag zag *)
