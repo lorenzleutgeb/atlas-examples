@@ -59,7 +59,7 @@ link h = match h with
  *   insert x h = merge (leaf, x, leaf) h
  *)
 insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
-insert x h = (merge (Tree.singleton x) h)
+insert x h = (merge (leaf, x, leaf) h)
 
 (**
  * Original definition:
