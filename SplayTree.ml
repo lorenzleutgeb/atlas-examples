@@ -1,3 +1,13 @@
+(**
+ * The function definitions in this file are taken from or made to match
+ * Section 6 of
+ *
+ *   Tobias Nipkow, Hauke Brinkop
+ *   Amortized Complexity Verified
+ *   Journal of Automated Reasoning, Vol. 62, Iss. 3, pp. 367-391
+ *   https://doi.org/10.1007/s10817-018-9459-3
+ *)
+
 splay_eq ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α → Tree α
 splay_eq a t = match t with
   | leaf        → leaf
