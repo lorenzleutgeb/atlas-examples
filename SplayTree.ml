@@ -229,6 +229,10 @@ insert a t = match t with
         then (l, a, (leaf, a', r))
         else ((l, a', leaf), a, r)
 
+insert_test x t = match t with
+  | leaf      → leaf
+  | (l, a, r) → (l, x, (leaf, a, r))
+
 contains_eq ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α → Bool
 contains_eq a t = match t with
   | leaf      → false
