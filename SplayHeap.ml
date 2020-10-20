@@ -44,7 +44,6 @@ insert d x h = match partition d x h with
   | leaf      → (leaf, x, leaf)
   | (l, y, r) → (l, x, r)
 
-
 partition ∷ Ord α ⇒ α ⨯ α ⨯ Tree α | [ 0 ↦ 1, (1 0) ↦ 3, (0 2) ↦ 2 ] → Tree α | [ 0 ↦ 1, (0 2) ↦ 1 ]
 partition d p t = match t with
   | leaf           → leaf

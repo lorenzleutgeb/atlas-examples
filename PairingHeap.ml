@@ -9,6 +9,12 @@
  *)
 
 (**
+ * Exposed definitions are
+ *  - insert
+ *  - del_min
+ *)
+
+(**
  * Original definition:
  *
  *   is_root h = (case h of leaf → true | (l, x, r) → r == leaf)
@@ -17,7 +23,7 @@ is_root ∷ Tree α → Bool
 is_root h = match h with
   | leaf      → true
   | (l, x, r) → match r with
-    | leaf          → true
+    | leaf         → true
     | (lr, xr, rr) → false
 
 (**
@@ -31,6 +37,7 @@ pheap h = match h with
   | leaf → true
   | (l, x, r) → (Bool.and (Bool.and (pheap l) (pheap r)) (all_leq l x))
 
+all_leq ∷ Ord α ⇒ Tree α → Bool
 all_leq t x = match t with
   | leaf → true
   | (l, y, r) → if y > x
@@ -61,6 +68,13 @@ link h = match h with
 insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 insert x h = (merge (leaf, x, leaf) h)
 
+insert_isolated ∷ Ord α ⇒ α ⨯ Tree α → Tree α
+insert_isolated x h = match h with
+    | leaf        → (leaf, x, leaf)
+    | (ly, y, ry) → if x < y
+      then ((leaf, y, leaf), x, ry)
+      else ((leaf, x, leaf), y, ry)
+
 (**
  * Original definition:
  *
@@ -75,7 +89,7 @@ insert x h = (merge (leaf, x, leaf) h)
  *
  * As potential function we take:
  *
- *   Phi leaf       := 0
+ *   Phi leaf      := 0
  *   Phi (l, _, r) := Phi l + Phi r + log' |l| + log' |r|
  *
  * where
@@ -158,6 +172,25 @@ merge h1 h2 = match h1 with
     | leaf        → (lx, x, rx)
     | (ly, y, ry) → (link (lx, x, (ly, y, leaf)))
 
+(**
+ * Here, link is inlined. Since `merge` calls `leaf`
+ * on `(lx, x, (ly, y, leaf))` one can directly
+ * inline the node-branch of the second match
+ * in the definition of link, i.e.
+ *
+ *   link (lx, x, (ly, y, leaf)) = if x < y
+ *       then ((ly, y, lx), x, leaf)
+ *       else ((lx, x, ly), y, leaf)
+ *)
+merge_isolated ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α
+merge_isolated h1 h2 = match h1 with
+  | leaf        → h2
+  | (lx, x, rx) → match h2 with
+    | leaf        → (lx, x, rx)
+    | (ly, y, ry) → if x < y
+      then ((ly, y, lx), x, leaf)
+      else ((lx, x, ly), y, leaf)
+
 del_min ∷ Ord α ⇒ Tree α → Tree α
 del_min h = match h with
   | leaf      → leaf
@@ -182,12 +215,12 @@ merge_pairs h = match h with
     | leaf        → (lx, x, leaf)
     | (ly, y, ry) → (link (link (lx, x, (ly, y, merge_pairs ry))))
 
-merge_pairs_nolink ∷ Ord α ⇒ Tree α → Tree α
-merge_pairs_nolink h = match h with
+merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α
+merge_pairs_isolated h = match h with
   | leaf -> leaf
   | (la, a, ra) -> match ra with
     | leaf -> (la, a, leaf)
-    | (lb, b, rb) -> match merge_pairs_nolink rb with
+    | (lb, b, rb) -> match merge_pairs_isolated rb with
       | leaf -> if a < b
         then ((lb, b, la), a, leaf)
         else ((la, a, lb), b, leaf)

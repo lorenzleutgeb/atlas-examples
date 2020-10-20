@@ -8,6 +8,12 @@
  *   https://doi.org/10.1007/s10817-018-9459-3
  *)
 
+(**
+ * Exposed definitions are
+ *  - insert
+ *  - delete
+ *)
+
 splay_eq ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α → Tree α
 splay_eq a t = match t with
   | leaf        → leaf
