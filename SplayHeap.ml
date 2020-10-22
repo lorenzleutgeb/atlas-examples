@@ -49,7 +49,7 @@ partition d p t = match t with
   | leaf           → leaf
   | (tab, ab, tbc) → if ab <= p
     then match tbc with
-      | leaf → ((tab, ab, leaf), d, leaf)
+      | leaf        → ((tab, ab, leaf), d, leaf)
       | (tb, b, tc) → if b <= p
         then match partition d p tc with
           | leaf          → leaf
@@ -69,7 +69,7 @@ partition d p t = match t with
 
 del_min ∷ (Eq (Tree α)) ⇒ Tree α | [ 0 ↦ 1, (1 0) ↦ 1, (1 1) ↦ 1, (0 2) ↦ 1 ] → Tree α | [ 0 ↦ 1, (0 2) ↦ 1 ]
 del_min t = match t with
-  | leaf          → leaf
+  | leaf         → leaf
   | (tab, b, tc) → match tab with
     | leaf → tc
     | (ta, a, tb) → if ta == leaf
