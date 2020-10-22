@@ -1,6 +1,9 @@
 cons ∷ α ⨯ Tree α → Tree α
 cons x t = (t, x, leaf)
 
+cons_cons ∷ α ⨯ α ⨯ Tree α → Tree α
+cons_cons x y t = ((t, x, leaf), y, leaf)
+
 tl ∷ Tree α → Tree α
 tl t = match t with
   | leaf      → leaf

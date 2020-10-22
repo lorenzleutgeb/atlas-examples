@@ -1,6 +1,9 @@
 cons ∷ α ⨯ Tree α → Tree α
 cons x t = (leaf, x, t)
 
+cons_cons ∷ α ⨯ α ⨯ Tree α → Tree α
+cons_cons x y t = (leaf, y, (leaf, x, t))
+
 (**
  * In our setting the tail of leaf is leaf.
  *)
