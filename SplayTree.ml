@@ -14,7 +14,7 @@
  *  - delete
  *)
 
-splay_eq ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α → Tree α
+splay_eq ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α | [ 0 ↦ 1, (1 0) ↦ 3, (0 2) ↦ 1 ] → Tree α | [ 0 ↦ 1, (0 2) ↦ 1 ]
 splay_eq a t = match t with
   | leaf        → leaf
   | (cl, c, cr) → if a == c
@@ -159,7 +159,7 @@ splay_zigzig a t = match t with
                 | leaf         → leaf (* TODO: undefined *)
                 | (al, a', ar) → (al, a', (ar, b, (br, c, cr)))
 
-splay_max_eq ∷ Eq (Tree α) ⇒ Tree α → Tree α
+splay_max_eq ∷ Eq (Tree α) ⇒ Tree α | [ 0 ↦ 1, (1 0) ↦ 3, (0 2) ↦ 1 ] → Tree α | [ 0 ↦ 1, (0 2) ↦ 1 ]
 splay_max_eq t = match t with
     | leaf      → leaf
     | (l, b, r) → match r with
@@ -228,10 +228,6 @@ insert a t = match t with
       else if a < a'
         then (l, a, (leaf, a', r))
         else ((l, a', leaf), a, r)
-
-insert_test x t = match t with
-  | leaf      → leaf
-  | (l, a, r) → (l, x, (leaf, a, r))
 
 contains_eq ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α → Bool
 contains_eq a t = match t with

@@ -65,7 +65,7 @@ link h = match h with
  *
  *   insert x h = merge (leaf, x, leaf) h
  *)
-insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
+insert ∷ Ord α ⇒ α ⨯ Tree α | [ 0 ↦ 1, (1 2) ↦ 6 ] → Tree α | [ 0 ↦ 1, (0 2) ↦ 2 ]
 insert x h = (merge (leaf, x, leaf) h)
 
 insert_isolated ∷ Ord α ⇒ α ⨯ Tree α → Tree α
@@ -165,7 +165,7 @@ insert_isolated x h = match h with
  *   <= log' (|lx| + |rx| + 1 + |ly| + |ry| + 1) (monotone log'))
  *    = log' (|h1| + |h2|)
  *)
-merge ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α
+merge ∷ Ord α ⇒ Tree α ⨯ Tree α | [ 0 ↦ 1, 1 ↦ 1, (1 1 0) ↦ 2, (0 0 2) ↦ 4 ] → Tree α | [ 0 ↦ 1, (0 2) ↦ 2 ]
 merge h1 h2 = match h1 with
   | leaf        → h2
   | (lx, x, rx) → match h2 with
@@ -215,16 +215,16 @@ merge_pairs h = match h with
     | leaf        → (lx, x, leaf)
     | (ly, y, ry) → (link (link (lx, x, (ly, y, merge_pairs ry))))
 
-merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α
+merge_pairs_isolated ∷ Ord α ⇒ Tree α  | [ 0 ↦ 1, (1 0) ↦ 3, (0 2) ↦ 1 ] → Tree α | [ 0 ↦ 1, (0 2) ↦ 1 ]
 merge_pairs_isolated h = match h with
-  | leaf -> leaf
-  | (la, a, ra) -> match ra with
-    | leaf -> (la, a, leaf)
-    | (lb, b, rb) -> match merge_pairs_isolated rb with
-      | leaf -> if a < b
+  | leaf        → leaf
+  | (la, a, ra) → match ra with
+    | leaf        → (la, a, leaf)
+    | (lb, b, rb) → match merge_pairs_isolated rb with
+      | leaf → if a < b
         then ((lb, b, la), a, leaf)
         else ((la, a, lb), b, leaf)
-      | (lc, c, rc) -> if a < b
+      | (lc, c, rc) → if a < b
         then if a < c
           then ((lc, c, (lb, b, la)), a, rc)
           else (((lb, b, la), a, lc), c, rc)
