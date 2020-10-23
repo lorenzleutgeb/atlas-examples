@@ -37,7 +37,7 @@ pheap h = match h with
   | leaf → true
   | (l, x, r) → (Bool.and (Bool.and (pheap l) (pheap r)) (all_leq l x))
 
-all_leq ∷ Ord α ⇒ Tree α → Bool
+all_leq ∷ Ord α ⇒ Tree α ⨯ α → Bool
 all_leq t x = match t with
   | leaf → true
   | (l, y, r) → if y > x

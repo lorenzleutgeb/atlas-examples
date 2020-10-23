@@ -67,7 +67,7 @@ partition d p t = match t with
           | leaf          → leaf
           | (ta1, x, ta2) → (ta1, d, (ta2, a, (tb, ab, tbc))) (* zig zig *)
 
-del_min ∷ (Eq (Tree α)) ⇒ Tree α → Tree α
+del_min ∷ (Eq (Tree α)) ⇒ Tree α → Tree α | [[0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 1, (1 1) ↦ 1] → [0 ↦ 1, (0 2) ↦ 1], {[] → [], [(1 0) ↦ 2] → [(1 0) ↦ 2]}]
 del_min t = match t with
   | leaf         → leaf
   | (tab, b, tc) → match tab with

@@ -14,11 +14,49 @@
  *  - delete
  *)
 
-(* NOTE: Use the following signature to check the rational solution for splay_eq. *)
-(* splay_eq ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α → Tree α | [[0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 5/2] → [0 ↦ 1, (0 2) ↦ 1], {[(1 0) ↦ 3/2] → [(1 0) ↦ 3/2], [] → [], [(1 0) ↦ 1/2] → [(1 0) ↦ 1/2]}]) *)
-
 splay_eq ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α → Tree α | [[0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 3] → [0 ↦ 1, (0 2) ↦ 1], {[(1 0) ↦ 1] → [(1 0) ↦ 1], [(1 0) ↦ 2] → [(1 0) ↦ 2], [] → []}]
 splay_eq a t = match t with
+  | leaf        → leaf
+  | (cl, c, cr) → if a == c
+    then (cl, c, cr)
+    else if a < c
+      then match cl with
+        | leaf        → (leaf, c, cr)
+        | (bl, b, br) → if a == b
+          then (bl, a, (br, c, cr))
+          else if a < b
+            then if bl == leaf
+              then (bl, b, (br, c, cr))
+              else match splay_eq a bl with
+                | leaf         → leaf (* TODO: undefined *)
+                | (al, a', ar) → (al, a', (ar, b, (br, c, cr))) (* zig zig *)
+            else if br == leaf
+              then (bl, b, (br, c, cr))
+              else match splay_eq a br with
+                | leaf         → leaf (* TODO: undefined *)
+                | (al, a', ar) → ((bl, b, al), a', (ar, c, cr)) (* zig zag *)
+      else match cr with
+        | leaf        → (cl, c, leaf)
+        | (bl, b, br) → if a == b
+          then ((cl, c, bl), a, br)
+          else if a < b
+            then if bl == leaf
+              then ((cl, c, bl), b, br)
+              else match splay_eq a bl with
+                | leaf         → leaf (* TODO: undefined *)
+                | (al, a', ar) → ((cl, c, al), a', (ar, b, br)) (* zag zig *)
+            else if br == leaf
+              then ((cl, c, bl), b, br)
+              else match splay_eq a br with
+                | leaf         → leaf (* TODO: undefined *)
+                | (al, x, xa) → (((cl, c, bl), b, al), x, xa) (* zag zag *)
+
+(**
+ * The body of this definition is syntactically equal to `splay_eq`, however
+ * its annotation uses the real numbers and provides a lower bound.
+ *)
+splay_eq_min ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α → Tree α | [[0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 5/2] → [0 ↦ 1, (0 2) ↦ 1], {[(1 0) ↦ 3/2] → [(1 0) ↦ 3/2], [] → [], [(1 0) ↦ 1/2] → [(1 0) ↦ 1/2]}]
+splay_eq_min a t = match t with
   | leaf        → leaf
   | (cl, c, cr) → if a == c
     then (cl, c, cr)
