@@ -51,7 +51,7 @@ all_leq t x = match t with
  *   link (lx, x, leaf) = (lx, x, leaf)
  *   link (lx, x, (ly, y, ry)) = (if x < y then ((ly, y, lx), x, ry) else ((lx, x, ly), y, ry))
  *)
-link ∷ Ord α ⇒ Tree α | [ 0 ↦ 1, (1 0) ↦ 1, (0 2) ↦ 2 ] → Tree α | [ 0 ↦ 1, (0 2) ↦ 2 ]
+link ∷ Ord α ⇒ Tree α → Tree α
 link h = match h with
   | leaf        → leaf
   | (lx, x, rx) → match rx with
@@ -65,7 +65,7 @@ link h = match h with
  *
  *   insert x h = merge (leaf, x, leaf) h
  *)
-insert ∷ Ord α ⇒ α ⨯ Tree α | [ 0 ↦ 1, (1 2) ↦ 6 ] → Tree α | [ 0 ↦ 1, (0 2) ↦ 2 ]
+insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α | [[0 ↦ 1, (1 2) ↦ 6] → [0 ↦ 1, (0 2) ↦ 1], {}]
 insert x h = (merge (leaf, x, leaf) h)
 
 insert_isolated ∷ Ord α ⇒ α ⨯ Tree α → Tree α
@@ -165,7 +165,7 @@ insert_isolated x h = match h with
  *   <= log' (|lx| + |rx| + 1 + |ly| + |ry| + 1) (monotone log'))
  *    = log' (|h1| + |h2|)
  *)
-merge ∷ Ord α ⇒ Tree α ⨯ Tree α | [ 0 ↦ 1, 1 ↦ 1, (1 1 0) ↦ 2, (0 0 2) ↦ 4 ] → Tree α | [ 0 ↦ 1, (0 2) ↦ 2 ]
+merge ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α | [[0 ↦ 1, 1 ↦ 1, (0 0 2) ↦ 4, (1 1 0) ↦ 2] → [0 ↦ 1, (0 2) ↦ 2], {[] → []}]
 merge h1 h2 = match h1 with
   | leaf        → h2
   | (lx, x, rx) → match h2 with
@@ -196,14 +196,14 @@ del_min h = match h with
   | leaf      → leaf
   | (l, x, r) → (pass2 (pass1 l))
 
-pass1 ∷ Ord α ⇒ Tree α → Tree α
+pass1 ∷ Ord α ⇒ Tree α → Tree α | [[0 ↦ 3, (0 2) ↦ 1, (1 0) ↦ 2] → [0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 1], {[(1 0) ↦ 2] → [(1 0) ↦ 2], [(1 0) ↦ 2, (1 1) ↦ 2, (1 2) ↦ 2] → [(1 0) ↦ 2], [(1 0) ↦ 1] → [(1 0) ↦ 1], [] → []}]
 pass1 h = match h with
   | leaf        → leaf
   | (lx, x, rx) → match rx with
     | leaf        → (lx, x, leaf)
     | (ly, y, ry) → (link (lx, x, (ly, y, pass1 ry)))
 
-pass2 ∷ Ord α ⇒ Tree α → Tree α
+pass2 ∷ Ord α ⇒ Tree α → Tree α | [[0 ↦ 3, (0 2) ↦ 1, (1 0) ↦ 4] → [0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 1], {[(1 0) ↦ 2] → [(1 0) ↦ 2], [] → [], [(1 0) ↦ 2, (1 1) ↦ 2, (1 2) ↦ 2] → [(1 0) ↦ 2]}]
 pass2 h = match h with
   | leaf      → leaf
   | (l, x, r) → (link (l, x, pass2 r))
@@ -215,7 +215,7 @@ merge_pairs h = match h with
     | leaf        → (lx, x, leaf)
     | (ly, y, ry) → (link (link (lx, x, (ly, y, merge_pairs ry))))
 
-merge_pairs_isolated ∷ Ord α ⇒ Tree α  | [ 0 ↦ 1, (1 0) ↦ 3, (0 2) ↦ 1 ] → Tree α | [ 0 ↦ 1, (0 2) ↦ 1 ]
+merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α | [[0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 3] → [0 ↦ 1, (0 2) ↦ 1], {[] → [], [(1 0) ↦ 1] → [(1 0) ↦ 1]}]
 merge_pairs_isolated h = match h with
   | leaf        → leaf
   | (la, a, ra) → match ra with
