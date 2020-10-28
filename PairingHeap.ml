@@ -22,9 +22,9 @@
 is_root ∷ Tree α → Bool
 is_root h = match h with
   | leaf      → true
-  | (l, x, r) → match r with
-    | leaf         → true
-    | (lr, xr, rr) → false
+  | (_, _, r) → match r with
+    | leaf → true
+    | _    → false
 
 (**
  * Original definition:
