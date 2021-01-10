@@ -55,7 +55,7 @@ splay_eq a t = match t with
  * The body of this definition is syntactically equal to `splay_eq`, however
  * its annotation uses the real numbers and provides a lower bound.
  *)
-splay_eq_min ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α → Tree α | [[0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 5/2] → [0 ↦ 1, (0 2) ↦ 1], {[(1 0) ↦ 3/2] → [(1 0) ↦ 3/2], [] → [], [(1 0) ↦ 1/2] → [(1 0) ↦ 1/2]}]
+splay_eq_min ∷ (Ord α, Eq (Tree α)) ⇒ α ⨯ Tree α → Tree α | [[0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 5/2] → [0 ↦ 1, (0 2) ↦ 1], {[] → [], [(1 0) ↦ 1/2] → [(1 0) ↦ 1/2], [(1 0) ↦ 3/2] → [(1 0) ↦ 3/2]}]
 splay_eq_min a t = match t with
   | leaf        → leaf
   | (cl, c, cr) → if a == c
