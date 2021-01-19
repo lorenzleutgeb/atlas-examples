@@ -68,4 +68,4 @@ del_min t = match t with
     | leaf        → tc
     | (ta, a, tb) → match ta with
       | leaf → (tb, b, tc)
-      | ta1  → (del_min ta1, a, (tb, b, tc))
+      | ta   → (del_min ta, a, (tb, b, tc))

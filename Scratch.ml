@@ -6,13 +6,16 @@ singleton_let x = (let n = leaf in
   (let m = leaf in (n, x, m))
 )
 
-id ∷ Tree α → Tree α
-id t = match t with
-    | leaf      → leaf
-    | (a, b, c) → (a, b, c)
+id ∷ α → α
+id x = x
 
 id_match ∷ Tree α → Tree α
 id_match t = match t with
+    | leaf      → leaf
+    | (a, b, c) → (a, b, c)
+
+id_match_match ∷ Tree α → Tree α
+id_match_match t = match t with
     | leaf      → leaf
     | (a, b, c) → match a with
       | leaf         → (leaf, b, c)
@@ -23,13 +26,19 @@ id_let t = match t with
     | leaf      → leaf
     | (a, b, c) → let t1 = (a, b, c) in t1
 
-left ∷ Tree α → Tree α
-left t = match t with
+left_child ∷ Tree α → Tree α
+left_child t = match t with
     | leaf      → leaf
     | (l, x, r) → l
 
-right ∷ Tree α → Tree α
-right t = match t with
+left ∷ α ⨯ β → α
+left x y = x
+
+right ∷ α ⨯ β → β
+right x y = y
+
+right_child ∷ Tree α → Tree α
+right_child t = match t with
     | leaf      → leaf
     | (l, x, r) → r
 
@@ -209,6 +218,8 @@ cf_in_cf t x v y w = let s = (let u = t in (u, y, w)) in (empty (s, x, v))
 *)
 
 lnf al a ar b br c cr = (let t1 = (br, c, cr) in (let t2 = (ar, b, t1) in (al, a, t2)))
+
+lnf_raw al a ar b br c cr = (al, a, (ar, b, (br, c, cr)))
 
 air t a = (let u = leaf in (t, a, u))
 

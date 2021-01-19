@@ -191,6 +191,11 @@ merge_isolated h1 h2 = match h1 with
       then ((ly, y, lx), x, leaf)
       else ((lx, x, ly), y, leaf)
 
+del_min_via_merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α
+del_min_via_merge_pairs_isolated h = match h with
+  | leaf      → leaf
+  | (l, x, r) → merge_pairs_isolated l
+
 del_min ∷ Ord α ⇒ Tree α → Tree α
 del_min h = match h with
   | leaf      → leaf
@@ -215,6 +220,7 @@ merge_pairs h = match h with
     | leaf        → (lx, x, leaf)
     | (ly, y, ry) → (link (link (lx, x, (ly, y, merge_pairs ry))))
 
+(* The same as `merge_pairs` but with `link` inlined. *)
 merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α | [[0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 3] → [0 ↦ 1, (0 2) ↦ 1], {[] → [], [(1 0) ↦ 1] → [(1 0) ↦ 1]}]
 merge_pairs_isolated h = match h with
   | leaf        → leaf
