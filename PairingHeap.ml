@@ -60,11 +60,6 @@ link h = match h with
       then ((ly, y, lx), x, ry)
       else ((lx, x, ly), y, ry)
 
-(**
- * Original definition:
- *
- *   insert x h = merge (leaf, x, leaf) h
- *)
 insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α | [[0 ↦ 1, (1 2) ↦ 6] → [0 ↦ 1, (0 2) ↦ 1], {}]
 insert x h = (merge (leaf, x, leaf) h)
 
@@ -191,15 +186,16 @@ merge_isolated h1 h2 = match h1 with
       then ((ly, y, lx), x, leaf)
       else ((lx, x, ly), y, leaf)
 
-del_min_via_merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α
-del_min_via_merge_pairs_isolated h = match h with
-  | leaf      → leaf
-  | (l, x, r) → merge_pairs_isolated l
-
 del_min ∷ Ord α ⇒ Tree α → Tree α
 del_min h = match h with
   | leaf      → leaf
-  | (l, x, r) → (pass2 (pass1 l))
+  | (l, _, _) → (pass2 (pass1 l))
+
+(* Same as `del_min` but with `merge_pairs_isolated` instead of `pass1` and `pass2`. *)
+del_min_via_merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α
+del_min_via_merge_pairs_isolated h = match h with
+  | leaf      → leaf
+  | (l, _, _) → merge_pairs_isolated l
 
 pass1 ∷ Ord α ⇒ Tree α → Tree α | [[0 ↦ 3, (0 2) ↦ 1, (1 0) ↦ 2] → [0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 1], {[(1 0) ↦ 2] → [(1 0) ↦ 2], [(1 0) ↦ 2, (1 1) ↦ 2, (1 2) ↦ 2] → [(1 0) ↦ 2], [(1 0) ↦ 1] → [(1 0) ↦ 1], [] → []}]
 pass1 h = match h with

@@ -104,29 +104,29 @@ splay_max t = match t with
 delete ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 delete a t = match t with
   | t → match splay a t with
-    | leaf       → leaf
-    | (l, a1, r) → if a == a1
+    | leaf      → leaf
+    | (l, b, r) → if a == b
       then match l with
         | leaf → r
         | l    → match splay_max l with
           | leaf        → leaf
           | (ll1, m, _) → (ll1, m, r)
-      else (l, a1, r)
+      else (l, b, r)
 
 insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 insert a t = match t with
   | leaf → (leaf, a, leaf)
   | t    → match splay a t with
-    | leaf       → leaf
-    | (l, a1, r) → if a == a1
+    | leaf      → leaf
+    | (l, b, r) → if a == b
       then (l, a, r)
-      else if a < a1
-        then (l, a, (leaf, a1, r))
-        else ((l, a1, leaf), a, r)
+      else if a < b
+        then (l, a, (leaf, b, r))
+        else ((l, b, leaf), a, r)
 
 contains ∷ Ord α ⇒ α ⨯ Tree α → Bool
 contains a t = match t with
   | leaf → false
   | t    → match splay a t with
     | leaf       → false
-    | (_, a1, _) → (a1 == a)
+    | (_, b, _) → (a == b)
