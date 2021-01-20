@@ -127,6 +127,6 @@ insert a t = match t with
 contains ∷ Ord α ⇒ α ⨯ Tree α → Bool
 contains a t = match t with
   | leaf → false
-  | t1   → match splay a t1 with
+  | t    → match splay a t with
     | leaf       → false
     | (_, a1, _) → (a1 == a)
