@@ -197,6 +197,11 @@ del_min_via_merge_pairs_isolated h = match h with
   | leaf      → leaf
   | (l, _, _) → merge_pairs_isolated l
 
+del_min_via_merge_pairs ∷ Ord α ⇒ Tree α → Tree α
+del_min_via_merge_pairs h = match h with
+  | leaf      → leaf
+  | (l, _, _) → merge_pairs l
+
 pass1 ∷ Ord α ⇒ Tree α → Tree α | [[0 ↦ 3, (0 2) ↦ 1, (1 0) ↦ 2] → [0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 1], {[(1 0) ↦ 2] → [(1 0) ↦ 2], [(1 0) ↦ 2, (1 1) ↦ 2, (1 2) ↦ 2] → [(1 0) ↦ 2], [(1 0) ↦ 1] → [(1 0) ↦ 1], [] → []}]
 pass1 h = match h with
   | leaf        → leaf
