@@ -231,29 +231,29 @@ test_old t = match t with
   | (l, a, r) → (l, a, (leaf, a, r))
 
 circular t = match t with
-  | leaf    → leaf
+  | leaf      → leaf
   | (l, a, r) → (let d = circular l in (d, a, r))
 
 test t y = match t with
- | leaf      -> leaf
- | (l, a, r) -> match l with
-    | leaf -> (leaf, a, r)
-    | (x,b,y)-> match x with
-        | leaf    -> (leaf, b,( y,a,r))
-        | (k,c,l1) -> (k,c,(l1,b,(y,a,r)))
+ | leaf      → leaf
+ | (l, a, r) → match l with
+    | leaf    → (leaf, a, r)
+    | (x,b,y) → match x with
+        | leaf     → (leaf, b,( y,a,r))
+        | (k,c,l1) → (k,c,(l1,b,(y,a,r)))
 
 test2 t = match t with
-  | leaf -> leaf
-  | (l,a,r) -> match l with
-     | leaf -> (leaf,a,r)
-     | (x,b,y)  -> let s = test2 x in match s with
-        | leaf -> (leaf,b,(y,a,r))
-        | (k,c,l) -> (k,c,(l,b,(y,a,r)))
+  | leaf    → leaf
+  | (l,a,r) → match l with
+     | leaf    → (leaf,a,r)
+     | (x,b,y) → let s = test2 x in match s with
+        | leaf    → (leaf,b,(y,a,r))
+        | (k,c,l) → (k,c,(l,b,(y,a,r)))
 
 insert_test a t = match t with
-  | leaf → leaf
+  | leaf         → leaf
   | (tl, ta, tr) → match SplayTree.splay a (tl, ta, tr) with
-    | leaf → leaf
+    | leaf       → leaf
     | (l, a1, r) → (l, a, (leaf, a1, r))
 
 (*
@@ -263,11 +263,11 @@ let x = leaf in
 *)
 
 insert_test2 t = match t with
-  | leaf → leaf
+  | leaf      → leaf
   | (l, a, r) → (l, a, (leaf, a, r))
 
 insert_test3 a t = match SplayTree.splay a t with
-  | leaf → leaf
+  | leaf       → leaf
   | (l, a1, r) → (l, a, (leaf, a1, r))
 
 (* Works *)

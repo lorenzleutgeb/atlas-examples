@@ -65,8 +65,8 @@ insert x h = (merge (leaf, x, leaf) h)
 
 insert_isolated ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 insert_isolated x h = match h with
-  | leaf       -> (leaf, x, leaf)
-  | (ly, y, _) -> if x < y
+  | leaf       → (leaf, x, leaf)
+  | (ly, y, _) → if x < y
     then ((ly, y, leaf), x, leaf)
     else ((leaf, x, ly), y, leaf)
 
