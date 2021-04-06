@@ -102,16 +102,13 @@ splay_max t = match t with
         | (rrl1, x, xa) → (((l, b, rl), c, rrl1), x, xa)
 
 delete ∷ Ord α ⇒ α ⨯ Tree α → Tree α
-delete a t = match t with
-  | t → match splay a t with
-    | leaf      → leaf
-    | (l, b, r) → if a == b
-      then match l with
-        | leaf → r
-        | l    → match splay_max l with
-          | leaf        → leaf
-          | (ll1, m, _) → (ll1, m, r)
-      else (l, b, r)
+delete a t = match splay a t with
+  | (l, b, r) → if a == b
+    then match l with
+      | leaf → r
+      | l    → match splay_max l with
+        | (ll1, m, _) → (ll1, m, r)
+    else (l, b, r)
 
 insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 insert a t = match t with
