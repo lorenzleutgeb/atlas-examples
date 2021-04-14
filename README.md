@@ -1,6 +1,6 @@
-# lac-examples
+# atlas-examples
 
 Examples accompanying the following implementations:
 
 - [ComputationWithBoundedResources/lac](https://github.com/ComputationWithBoundedResources/lac)
-- [lorenzleutgeb/lac](https://github.com/lorenzleutgeb/lac)
+- [lorenzleutgeb/atlas](https://github.com/lorenzleutgeb/atlas)
