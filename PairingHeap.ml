@@ -177,7 +177,7 @@ merge h1 h2 = match h1 with
  *       then ((ly, y, lx), x, leaf)
  *       else ((lx, x, ly), y, leaf)
  *)
-merge_isolated ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α
+merge_isolated ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α | [[0 ↦ 1 / 2, 1 ↦ 1 / 2, (0 0 2) ↦ 2, (1 1 0) ↦ 1 / 2] → [0 ↦ 1 / 2, (0 2) ↦ 1], {[] → []}]
 merge_isolated h1 h2 = match h1 with
   | leaf        → h2
   | (lx, x, rx) → match h2 with
