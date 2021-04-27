@@ -39,12 +39,12 @@ partition p t = match t with
           | (ta1, x, ta2) → (ta1, 0, (ta2, a, (tb, ab, tbc)))
 *)
 
-insert ∷ Ord α ⇒ α ⨯ α ⨯ Tree α → Tree α | [[0 ↦ 1, (0 2) ↦ 2, (1 0) ↦ 1, (1 1) ↦ 3, (1 2) ↦ 3] → [0 ↦ 1, (0 2) ↦ 1], {}]
+insert ∷ Ord α ⇒ α ⨯ α ⨯ Tree α → Tree α | [[0 ↦ 1 / 2, (0 2) ↦ 5 / 2, (1 0) ↦ 3 / 4, (1 1) ↦ 1] → [0 ↦ 1 / 2, (0 2) ↦ 1], {}]
 insert d x h = match partition d x h with
   | leaf      → (leaf, x, leaf)
   | (l, _, r) → (l, x, r)
 
-partition ∷ Ord α ⇒ α ⨯ α ⨯ Tree α → Tree α | [[0 ↦ 1, (0 2) ↦ 3, (1 0) ↦ 1, (1 1) ↦ 3] → [0 ↦ 1, (0 2) ↦ 1], {[] → [], [(1 1) ↦ 2] → [(1 0) ↦ 2], [(1 1) ↦ 1] → [(1 0) ↦ 1]}]
+partition ∷ Ord α ⇒ α ⨯ α ⨯ Tree α → Tree α | [[0 ↦ 1 / 2, (0 2) ↦ 1, (1 0) ↦ 3 / 4, (1 1) ↦ 1] → [0 ↦ 1 / 2, (0 2) ↦ 1], {[(1 1) ↦ 1 / 2] → [(1 0) ↦ 1 / 2]}]
 partition d p t = match t with
   | (tab, ab, tbc) → if ab <= p
     then match tbc with
@@ -62,7 +62,7 @@ partition d p t = match t with
         else match partition d p ta with
           | (ta1, _, ta2) → (ta1, d, (ta2, a, (tb, ab, tbc))) (* zig zig *)
 
-del_min ∷ Tree α → Tree α | [[0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 1, (1 1) ↦ 1] → [0 ↦ 1, (0 2) ↦ 1], {[] → [], [(1 0) ↦ 2] → [(1 0) ↦ 2]}]
+del_min ∷ Tree α → Tree α | [[0 ↦ 1 / 2, (0 2) ↦ 1, (1 0) ↦ 1] → [0 ↦ 1 / 2, (0 2) ↦ 1], {[(1 0) ↦ 1 / 4] → [(1 0) ↦ 1 / 4]}]
 del_min t = match t with
   | (tab, b, tc) → match tab with
     | leaf        → tc
