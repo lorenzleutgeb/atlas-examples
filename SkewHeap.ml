@@ -10,7 +10,6 @@
 
 del_min ∷ Ord α ⇒ Tree α → Tree α
 del_min t = match t with
-  | leaf      → leaf
   | (l, m, r) → (merge l r)
 
 insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α

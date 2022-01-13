@@ -35,7 +35,6 @@ all f t = and (map f t);
 map ∷ (α → β) ⨯ Tree α → Tree β
 map f t =
   match t with
-    | leaf      → leaf
     | (l, x, r) → (map f l, f x, map f r);
 
 fold ∷ (β * α → β) * β ⨯ Tree α → β
@@ -47,10 +46,8 @@ fold f z t =
 zipWith ∷ (a * β → γ) ⨯ Tree α ⨯ Tree β → Tree γ
 zipWith f t u =
   match t with
-    | leaf      → leaf
     | (l, x, r) →
         match u with
-          | leaf      → leaf
           | (v, y, w) → let l' = zipWith f l v in
                          let r' = zipWith f r w in
                          (l', f x y, r');

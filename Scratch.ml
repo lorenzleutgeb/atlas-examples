@@ -11,24 +11,20 @@ id x = x
 
 id_match ∷ Tree α → Tree α
 id_match t = match t with
-    | leaf      → leaf
     | (a, b, c) → (a, b, c)
 
 id_match_match ∷ Tree α → Tree α
 id_match_match t = match t with
-    | leaf      → leaf
     | (a, b, c) → match a with
       | leaf         → (leaf, b, c)
       | (aa, ab, ac) → ((aa, ab, ac), b, c)
 
 id_let ∷ Tree α → Tree α
 id_let t = match t with
-    | leaf      → leaf
     | (a, b, c) → let t1 = (a, b, c) in t1
 
 left_child ∷ Tree α → Tree α
 left_child t = match t with
-    | leaf      → leaf
     | (l, x, r) → l
 
 left ∷ α ⨯ β → α
@@ -39,12 +35,10 @@ right x y = y
 
 right_child ∷ Tree α → Tree α
 right_child t = match t with
-    | leaf      → leaf
     | (l, x, r) → r
 
 flip ∷ Tree α → Tree α
 flip t = match t with
-    | leaf      → leaf
     | (l, x, r) → (r, x, l)
 
 empty ∷ Tree α → Bool
@@ -160,11 +154,7 @@ contains_unordered x t = match t with
  *)
 iter ∷ Tree α → Tree α
 iter t = match t with
-  | leaf      → leaf
   | (l, x, r) → (iter l, x, iter r)
-
-id ∷ α → α
-id x = x
 
 left ∷ α ⨯ β → α
 left x y = x
@@ -227,15 +217,12 @@ myleaf = leaf
 
 (*
 test_old t = match t with
-  | leaf      → leaf
   | (l, a, r) → (l, a, (leaf, a, r))
 
 circular t = match t with
-  | leaf      → leaf
   | (l, a, r) → (let d = circular l in (d, a, r))
 
 test t y = match t with
- | leaf      → leaf
  | (l, a, r) → match l with
     | leaf    → (leaf, a, r)
     | (x,b,y) → match x with
@@ -243,7 +230,6 @@ test t y = match t with
         | (k,c,l1) → (k,c,(l1,b,(y,a,r)))
 
 test2 t = match t with
-  | leaf    → leaf
   | (l,a,r) → match l with
      | leaf    → (leaf,a,r)
      | (x,b,y) → let s = test2 x in match s with
@@ -251,9 +237,7 @@ test2 t = match t with
         | (k,c,l) → (k,c,(l,b,(y,a,r)))
 
 insert_test a t = match t with
-  | leaf         → leaf
   | (tl, ta, tr) → match SplayTree.splay a (tl, ta, tr) with
-    | leaf       → leaf
     | (l, a1, r) → (l, a, (leaf, a1, r))
 
 (*
@@ -263,11 +247,9 @@ let x = leaf in
 *)
 
 insert_test2 t = match t with
-  | leaf      → leaf
   | (l, a, r) → (l, a, (leaf, a, r))
 
 insert_test3 a t = match SplayTree.splay a t with
-  | leaf       → leaf
   | (l, a1, r) → (l, a, (leaf, a1, r))
 
 (* Works *)
@@ -277,3 +259,77 @@ insert_test4 a t = (SplayTree.splay a t)
 insert_test5 a t = (let d = SplayTree.splay a t in d)
 
 *)
+
+f2 ∷ Tree α → Tree α
+f2 t = match t with
+  | (tl, x, tr) → let t1 ≔ ~ 1 2 (f2 tl) in t1
+
+(**
+ * NOTE: Terminates only on `leaf`, but does not terminate on any other tree!
+ *)
+f3 ∷ Tree α → Tree α
+f3 t = match t with
+  | t    → let t1 ≔ ~ 1 2 (f3 t) in t1
+
+(**
+ * NOTE: Does not terminate.
+ *)
+f4 ∷ Tree α → Tree α
+f4 t = let t1 ≔ ~ 1 2 (f4 t) in t1
+
+f5 ∷ Tree α * α → Tree α
+f5 t a = match t with
+  | leaf        → (leaf, a, leaf)
+  | (tl, x, tr) → ~ 1 2 (f5 tl a)
+
+f6 ∷ Tree α * α → Tree α
+f6 t a = match t with
+  | leaf        → (leaf, a, leaf)
+  | (tl, x, tr) → ~ 1 2 let t1 ≔ f6 tl a in t1
+
+f7 ∷ Tree α * α → Tree α
+f7 t a = match t with
+  | leaf        → (leaf, a, leaf)
+  | (tl, x, tr) → let t1 ≔ ~ 1 2 (f7 tl a) in t1
+
+h ∷ Tree α → Tree α
+h t = let t1 ≔ ~ 1 2 (h t) in t1
+
+id1 ∷ Tree α → Tree α
+id1 t = t
+
+id2 ∷ Tree α → Tree α
+id2 t = id1 t
+
+id3 ∷ Tree α → Tree α
+id3 t = ~ id1 t
+
+id4 ∷ Tree α → Tree α
+id4 t = let d ≔ ~ id1 t in d
+
+test ∷ Tree α ⨯ Tree α ⨯ Tree α ⨯ α → Tree α
+test a b c dummy = let c1 = id1 c in (((c1, dummy, b), dummy, a), dummy, leaf)
+
+test5 ∷ Tree α ⨯ Tree α ⨯ Tree α ⨯ α → Tree α
+test5 a b c dummy = let c1 = id1 c in ((c1,dummy,b),dummy,a)
+
+test6 ∷ Tree α ⨯ Tree α ⨯ α → Tree α
+test6 b c dummy = let c1 = id1 c in (c1,dummy,b)
+
+test7 ∷ Tree α ⨯ Tree α ⨯ Tree α ⨯ α → Tree α
+test7 a b c dummy = let c1 = id1 c in (c1,dummy,b)
+
+test2 ∷ Tree α ⨯ Tree α ⨯ α → Tree α
+test2 b c dummy = let c1 = id1 c in ((c1, dummy, b), dummy, leaf)
+
+test3 ∷ Tree α ⨯ α → Tree α
+test3 c dummy = let c1 = id1 c in (c1, dummy, leaf)
+
+test4 ∷ Tree α ⨯ α → Tree α
+test4 c dummy = (c, dummy, leaf)
+
+test8 ∷ Tree α ⨯ α → Tree α
+test8 t dummy = ((leaf, dummy, leaf), dummy, t)
+
+test9 ∷ Tree α ⨯ Tree α ⨯ α → Tree α
+test9 t1 t2 dummy = ((leaf, dummy, leaf), dummy, (t1, dummy, t2))

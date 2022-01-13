@@ -9,7 +9,6 @@ cons_cons x y t = (leaf, y, (leaf, x, t))
  *)
 tl ∷ Tree α → Tree α
 tl t = match t with
-  | leaf      → leaf
   | (l, x, r) → r
 
 (**
@@ -42,7 +41,6 @@ append t1 t2 = match t1 with
  *)
 descend ∷ Tree α → Tree β
 descend t = match t with
-  | leaf      → leaf
   | (l, m, r) → (descend r)
 
 is ∷ Tree α → Bool
@@ -65,7 +63,6 @@ is t = match t with
  *)
 iter ∷ Tree α → Tree α
 iter t = match t with
-  | leaf      → leaf
   | (l, x, r) → (cons x (iter r))
 
 (**

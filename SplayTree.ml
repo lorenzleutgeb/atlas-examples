@@ -26,13 +26,11 @@ splay a t = match t with
           else if a < b
             then match bl with
               | leaf → (leaf, b, (br, c, cr))
-              | bl   → match splay a bl with
-                | leaf         → leaf
+              | bl   → match ~ splay a bl with
                 | (al, a1, ar) → (al, a1, (ar, b, (br, c, cr)))
             else match br with
               | leaf → (bl, b, (leaf, c, cr))
-              | br   → match splay a br with
-                | leaf         → leaf
+              | br   → match ~ splay a br with
                 | (al, a1, ar) → ((bl, b, al), a1, (ar, c, cr))
       else match cr with
         | leaf        → (cl, c, leaf)
@@ -41,13 +39,11 @@ splay a t = match t with
           else if a < b
             then match bl with
               | leaf → ((cl, c, leaf), b, br)
-              | bl   → match splay a bl with
-                | leaf         → leaf
+              | bl   → match ~ splay a bl with
                 | (al, a1, ar) → ((cl, c, al), a1, (ar, b, br))
             else match br with
               | leaf → ((cl, c, bl), b, leaf)
-              | br   → match splay a br with
-                | leaf         → leaf
+              | br   → match ~ splay a br with
                 | (al, a1, ar) → (((cl, c, bl), b, al), a1, ar)
 
 (**
@@ -67,12 +63,10 @@ splay_int a t = match t with
             then match bl with
               | leaf → (leaf, b, (br, c, cr))
               | bl   → match splay_int a bl with
-                | leaf         → leaf
                 | (al, a1, ar) → (al, a1, (ar, b, (br, c, cr)))
             else match br with
               | leaf → (bl, b, (leaf, c, cr))
               | br   → match splay_int a br with
-                | leaf         → leaf
                 | (al, a1, ar) → ((bl, b, al), a1, (ar, c, cr))
       else match cr with
         | leaf        → (cl, c, leaf)
@@ -82,12 +76,10 @@ splay_int a t = match t with
             then match bl with
               | leaf → ((cl, c, leaf), b, br)
               | bl   → match splay_int a bl with
-                | leaf         → leaf
                 | (al, a1, ar) → ((cl, c, al), a1, (ar, b, br))
             else match br with
               | leaf → ((cl, c, bl), b, leaf)
               | br   → match splay_int a br with
-                | leaf         → leaf
                 | (al, a1, ar) → (((cl, c, bl), b, al), a1, ar)
 
 (* splay_max_eq ∷ Eq (Tree α) ⇒ Tree α → Tree α | [[0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 3] → [0 ↦ 1, (0 2) ↦ 1], {[(1 0) ↦ 1] → [(1 0) ↦ 1], [(1 0) ↦ 2] → [(1 0) ↦ 2], [] → []}] *)
@@ -97,16 +89,15 @@ splay_max t = match t with
     | leaf        → (l, b, leaf)
     | (rl, c, rr) → match rr with
       | leaf →  ((l, b, rl), c, leaf)
-      | rr   → match splay_max rr with
-        | leaf          → leaf
+      | rr   → match ~ splay_max rr with
         | (rrl1, x, xa) → (((l, b, rl), c, rrl1), x, xa)
 
 delete ∷ Ord α ⇒ α ⨯ Tree α → Tree α
-delete a t = match splay a t with
+delete a t = match ~ splay a t with
   | (l, b, r) → if a == b
     then match l with
       | leaf → r
-      | l    → match splay_max l with
+      | l    → match ~ splay_max l with
         | (ll1, m, _) → (ll1, m, r)
     else (l, b, r)
 
@@ -114,7 +105,6 @@ insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 insert a t = match t with
   | leaf → (leaf, a, leaf)
   | t    → match splay a t with
-    | leaf      → leaf
     | (l, b, r) → if a == b
       then (l, a, r)
       else if a < b

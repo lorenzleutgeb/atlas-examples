@@ -6,7 +6,6 @@ cons_cons x y t = ((t, x, leaf), y, leaf)
 
 tl ∷ Tree α → Tree α
 tl t = match t with
-  | leaf      → leaf
   | (l, x, r) → l
 
 (**
@@ -109,7 +108,6 @@ append t1 t2 = match t1 with
  *)
 descend ∷ Tree α → Tree β
 descend t = match t with
-  | leaf      → leaf
   | (l, x, r) → (descend l)
 
 (**
@@ -122,7 +120,6 @@ descend t = match t with
  *)
 descend_on_first ∷ Tree α ⨯ Tree α → Tree β
 descend_on_first t1 t2 = match t1 with
-  | leaf      → leaf
   | (l, x, r) → (descend_on_first l t2)
 
 (**
@@ -135,7 +132,6 @@ descend_on_first t1 t2 = match t1 with
  *)
 descend_on_second ∷ Tree α ⨯ Tree α → Tree β
 descend_on_second t1 t2 = match t2 with
-  | leaf      → leaf
   | (l, x, r) → (descend_on_second t1 l)
 
 inorder ∷ Tree α ⨯ Tree α → Tree α
@@ -160,7 +156,6 @@ is t = match t with
  *)
 iter ∷ Tree α → Tree α
 iter t = match t with
-  | leaf      → leaf
   | (l, x, r) → (cons x (iter l))
 
 postorder ∷ Tree α ⨯ Tree α → Tree α

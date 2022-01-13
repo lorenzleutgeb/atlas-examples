@@ -53,7 +53,6 @@ all_leq t x = match t with
  *)
 link ∷ Ord α ⇒ Tree α → Tree α
 link h = match h with
-  | leaf        → leaf
   | (lx, x, rx) → match rx with
     | leaf        → (lx, x, leaf)
     | (ly, y, ry) → if x < y
@@ -188,46 +187,39 @@ merge_isolated h1 h2 = match h1 with
 
 del_min ∷ Ord α ⇒ Tree α → Tree α
 del_min h = match h with
-  | leaf      → leaf
   | (l, _, _) → (pass2 (pass1 l))
 
 (* Same as `del_min` but with `merge_pairs_isolated` instead of `pass1` and `pass2`. *)
 del_min_via_merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α
 del_min_via_merge_pairs_isolated h = match h with
-  | leaf      → leaf
-  | (l, _, _) → merge_pairs_isolated l
+  | (l, _, _) → ~ merge_pairs_isolated l
 
 del_min_via_merge_pairs ∷ Ord α ⇒ Tree α → Tree α
 del_min_via_merge_pairs h = match h with
-  | leaf      → leaf
-  | (l, _, _) → merge_pairs l
+  | (l, _, _) → ~ merge_pairs l
 
 pass1 ∷ Ord α ⇒ Tree α → Tree α | [[0 ↦ 3, (0 2) ↦ 1, (1 0) ↦ 2] → [0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 1], {[(1 0) ↦ 2] → [(1 0) ↦ 2], [(1 0) ↦ 2, (1 1) ↦ 2, (1 2) ↦ 2] → [(1 0) ↦ 2], [(1 0) ↦ 1] → [(1 0) ↦ 1], [] → []}]
 pass1 h = match h with
-  | leaf        → leaf
   | (lx, x, rx) → match rx with
     | leaf        → (lx, x, leaf)
-    | (ly, y, ry) → (link (lx, x, (ly, y, pass1 ry)))
+    | (ly, y, ry) → (~ link (lx, x, (ly, y, ~ pass1 ry)))
 
 pass2 ∷ Ord α ⇒ Tree α → Tree α | [[0 ↦ 3, (0 2) ↦ 1, (1 0) ↦ 4] → [0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 1], {[(1 0) ↦ 2] → [(1 0) ↦ 2], [] → [], [(1 0) ↦ 2, (1 1) ↦ 2, (1 2) ↦ 2] → [(1 0) ↦ 2]}]
 pass2 h = match h with
-  | leaf      → leaf
-  | (l, x, r) → (link (l, x, pass2 r))
+  | (l, x, r) → (~ link (l, x, ~ pass2 r))
 
 merge_pairs ∷ Ord α ⇒ Tree α → Tree α
 merge_pairs h = match h with
-  | leaf        → leaf
   | (lx, x, rx) → match rx with
     | leaf        → (lx, x, leaf)
-    | (ly, y, ry) → (link (link (lx, x, (ly, y, merge_pairs ry))))
+    | (ly, y, ry) → (~ link (~ link (lx, x, (ly, y, ~ merge_pairs ry))))
 
 (* The same as `merge_pairs` but with `link` inlined. *)
 merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α | [[0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 3] → [0 ↦ 1, (0 2) ↦ 1], {[] → [], [(1 0) ↦ 1] → [(1 0) ↦ 1]}]
 merge_pairs_isolated h = match h with
-  | leaf        → leaf
   | (la, a, ra) → match ra with
     | leaf        → (la, a, leaf)
-    | (lb, b, rb) → match merge_pairs_isolated rb with
+    | (lb, b, rb) → match ~ merge_pairs_isolated rb with
       | leaf → if a < b
         then ((lb, b, la), a, leaf)
         else ((la, a, lb), b, leaf)
