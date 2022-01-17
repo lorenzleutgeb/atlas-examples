@@ -35,14 +35,14 @@ is_root h = match h with
 pheap ∷ Ord α ⇒ Tree α → Bool
 pheap h = match h with
   | leaf → true
-  | (l, x, r) → (Bool.and (Bool.and (pheap l) (pheap r)) (all_leq l x))
+  | (l, x, r) → (Bool.and (Bool.and (~ pheap l) (~ pheap r)) (~ all_leq l x))
 
 all_leq ∷ Ord α ⇒ Tree α ⨯ α → Bool
 all_leq t x = match t with
   | leaf → true
   | (l, y, r) → if y > x
     then false
-    else (Bool.and (all_leq l x) (all_leq r x))
+    else (Bool.and (~ all_leq l x) (~ all_leq r x))
 
 (**
  * Original definition:
@@ -187,7 +187,7 @@ merge_isolated h1 h2 = match h1 with
 
 del_min ∷ Ord α ⇒ Tree α → Tree α
 del_min h = match h with
-  | (l, _, _) → (pass2 (pass1 l))
+  | (l, _, _) → (~ pass2 (~ pass1 l))
 
 (* Same as `del_min` but with `merge_pairs_isolated` instead of `pass1` and `pass2`. *)
 del_min_via_merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α

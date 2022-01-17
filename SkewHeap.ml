@@ -8,19 +8,19 @@
  *   https://doi.org/10.1007/s10817-018-9459-3
  *)
 
-del_min ∷ Ord α ⇒ Tree α → Tree α
-del_min t = match t with
-  | (l, m, r) → (merge l r)
+del_min ∷ Ord α ⇒ α ⨯ Tree α → (Tree α ⨯ α)
+del_min z h = match h with
+  | leaf      → {leaf, z}
+  | (l, x, r) → {(merge l r), x}
 
 insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
-insert a h = (merge (leaf, a, leaf) h)
-(* insert a h = (merge (Tree.singleton a) h) *)
+insert x h = (merge (leaf, a, leaf) h)
 
 merge ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α
 merge h1 h2 = match h1 with
-  | leaf         → h2
-  | (l1, a1, r1) → match h2 with
-    | leaf         → (l1, a1, r1)
-    | (l2, a2, r2) → if a1 < a2
-      then ((merge (l2, a2, r2) r1), a1, l1)
-      else ((merge (l1, a1, r1) r2), a2, l2)
+  | leaf            → h2
+  | (h1l, h1x, h1r) → match h2 with
+    | leaf            → (h1l, h1x, h1r)
+    | (h2l, h2x, h2r) → if h1x < h2x
+      then ((~ merge (h2l, h2x, h2r) h1r), h1x, h1l)
+      else ((~ merge (h1l, h1x, h1r) h2r), h2x, h2l)

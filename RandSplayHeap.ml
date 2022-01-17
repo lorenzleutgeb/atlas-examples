@@ -8,18 +8,19 @@
  *   https://doi.org/10.1007/s10817-018-9459-3
  *)
 
-del_min ∷ Tree α → Tree α
-del_min t = match t with
+del_min ∷ α ⨯ Tree α → (Tree α ⨯ α)
+del_min z t = match t with
+  | leaf         → {leaf, z}
   | (tab, b, tc) → match tab with
-    | leaf        → tc
+    | leaf        → {tc, b}
     | (ta, a, tb) → match ta with
-      | leaf → (tb, b, tc)
-      | ta   → let t1 = ~ 1 2 del_min ta in
-        if coin
-          then ~ 1 2 (t1, a, (tb, b, tc))
-          else (((t1, a, tb), b, tc)
+      | leaf → {(tb, b, tc), a}
+      | ta   → match ~ 1 2 del_min z ta with
+        | {t1, x} → if coin
+          then ~ 1 2 {(t1, a, (tb, b, tc)), x}
+          else {((t1, a, tb), b, tc), x}
 
-insert ∷ α ⨯ Tree α → Tree α
+insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 insert d t = match t with
   | (tab, ab, tbc) → if ab <= d
     then match tbc with
@@ -28,18 +29,18 @@ insert d t = match t with
         then match ~ 1 2 insert d tc with (* zag zag *)
           | (tc1, c, tc2) → if coin
             then ~ 1 2 (((tab, ab, tb), b, tc1), c, tc2)
-            else (tab, ab, (tb, b, (tc1, c, tc2))
+            else (tab, ab, (tb, b, (tc1, c, tc2)))
         else match ~ 1 2 insert d tb with (* zag zig *)
           | (tb1, c, tb2) → if coin
             then ~ 1 2 ((tab, ab, tb1), d, (tb2, b, tc))
-            else (tab, ab, ((tb1, c, tb2), b, tc)
+            else (tab, ab, ((tb1, c, tb2), b, tc))
     else match tab with
       | leaf        → ((leaf, d, leaf), ab, tbc)
       | (ta, a, tb) → if a <= d
         then match ~ 1 2 insert d tb with (* zig zag *)
           | (tb1, c, tb2) → if coin
             then ~ 1 2 ((ta, a, tb1), c, (tb2, ab, tbc))
-            else ((ta, a, (tb1, c, tb2)), ab, tb)
+            else ((ta, a, (tb1, c, tb2)), ab, tbc)
         else match ~ 1 2 insert d ta with (* zig zig *)
           | (ta1, c, ta2) → if coin
             then ~ 1 2 (ta1, c, (ta2, a, (tb, ab, tbc)))
