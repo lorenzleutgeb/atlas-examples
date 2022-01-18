@@ -42,25 +42,25 @@ insert ∷ Eq α ⇒ α ⨯ Tree α → Tree α
 insert a t = match t with
   | node cl c cr → if a == c
     then (node cl c cr)
-    else (*if a < c
-      then*) match cl with
+    else if a < c
+      then match cl with
         | leaf        → (node (node leaf a leaf) c cr)
         | node bl b br → if a == b
           then (node (node bl a br) c cr) (* Found. No rotation. *)
-          else (*if a < b
-            then*) match bl with
+          else if a < b
+            then match bl with
               | leaf → (node (node leaf a leaf) b (node br c cr))
               | bl   → match ~ 1 2 insert a bl with
                 | node al a1 ar → if coin
                   then ~ 1 2 (node al a1 (node ar b (node br c cr)))
                   else (node (node (node al a1 ar) b br) c cr)
-            (*else match br with
+            else match br with
               | leaf → (node bl b (node (node leaf a leaf) c cr))
               | br   → match ~ 1 2 insert a br with
                 | node al a1 ar → if coin
                   then ~ 1 2 (node (node bl b al) a1 (node ar c cr))
-                  else (node (node bl b (node al a1 ar)) c cr)*)
-      (*else match cr with
+                  else (node (node bl b (node al a1 ar)) c cr)
+      else match cr with
         | leaf → (node cl c (node leaf a leaf))
         | node bl b br → if a == b
           then (node cl c (node bl a br)) (* Found. No rotation. *)
@@ -72,11 +72,11 @@ insert a t = match t with
                   then ~ 1 2 (node (node cl c al) a1 (node ar b br))
                   else (node cl c (node (node al a1 ar) b br))
             else match br with
-              | leaf → (node (node cl c bl) b leaf (*node leaf a leaf*)) (* TODO *)
+              | leaf → ((node (node cl c bl) b (node leaf a leaf)))
               | br   → match ~ 1 2 insert a br with
                 | node al a1 ar → if coin
                   then ~ 1 2 (node (node (node cl c bl) b al) a1 ar)
-                  else (node cl c (node bl b (node al a1 ar)))*)
+                  else (node cl c (node bl b (node al a1 ar)))
 
 splay_max ∷ α ⨯ Tree α → (Tree α ⨯ α)
 splay_max z t = match t with
@@ -89,8 +89,8 @@ splay_max z t = match t with
         | (r1, max) → match r1 with
           | leaf          → (leaf, z)
           | node rrl1 x xa → if coin
-            then ~ 1 2 ((node (node (node l b rl) c rrl1) x xa), max) (* rotation *)
-            else ((node l b (node rl c (node rrl1 x xa))), max) (* no rotation *)
+            then ~ 1 2 ((node (node (node l b rl) c rrl1) x xa), max)
+            else ((node l b (node rl c (node rrl1 x xa))), max) (* No rotation! *)
 
 delete ∷ Ord α ⇒ α ⨯ α ⨯ Tree α → Tree α
 delete z a t = match t with

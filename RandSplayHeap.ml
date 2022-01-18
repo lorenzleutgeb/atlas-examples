@@ -10,38 +10,38 @@
 
 del_min ∷ α ⨯ Tree α → (Tree α ⨯ α)
 del_min z t = match t with
-  | leaf         → {leaf, z}
-  | (tab, b, tc) → match tab with
-    | leaf        → {tc, b}
-    | (ta, a, tb) → match ta with
-      | leaf → {(tb, b, tc), a}
+  | leaf         → (leaf, z)
+  | node tab b tc → match tab with
+    | leaf        → (tc, b)
+    | node ta a tb → match ta with
+      | leaf → ((node tb b tc), a)
       | ta   → match ~ 1 2 del_min z ta with
-        | {t1, x} → if coin
-          then ~ 1 2 {(t1, a, (tb, b, tc)), x}
-          else {((t1, a, tb), b, tc), x}
+        | (t1, x) → if coin
+          then ~ 1 2 ((node t1 a (node tb b tc)), x)
+          else ((node (node t1 a tb) b tc), x)
 
 insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 insert d t = match t with
-  | (tab, ab, tbc) → if ab <= d
+  | node tab ab tbc → if ab <= d
     then match tbc with
-      | leaf        → (tab, ab, (leaf, d, leaf))
-      | (tb, b, tc) → if b <= d
+      | leaf        → (node tab ab (node leaf d leaf))
+      | node tb b tc → if b <= d
         then match ~ 1 2 insert d tc with (* zag zag *)
-          | (tc1, c, tc2) → if coin
-            then ~ 1 2 (((tab, ab, tb), b, tc1), c, tc2)
-            else (tab, ab, (tb, b, (tc1, c, tc2)))
+          | node tc1 c tc2 → if coin
+            then ~ 1 2 (node (node (node tab ab tb) b tc1) c tc2)
+            else (node tab ab (node tb b (node tc1 c tc2)))
         else match ~ 1 2 insert d tb with (* zag zig *)
-          | (tb1, c, tb2) → if coin
-            then ~ 1 2 ((tab, ab, tb1), d, (tb2, b, tc))
-            else (tab, ab, ((tb1, c, tb2), b, tc))
+          | node tb1 c tb2 → if coin
+            then ~ 1 2 (node (node tab ab tb1) d (node tb2 b tc))
+            else (node tab ab (node (node tb1 c tb2) b tc))
     else match tab with
-      | leaf        → ((leaf, d, leaf), ab, tbc)
-      | (ta, a, tb) → if a <= d
+      | leaf        → (node (node leaf d leaf) ab tbc)
+      | node ta a tb → if a <= d
         then match ~ 1 2 insert d tb with (* zig zag *)
-          | (tb1, c, tb2) → if coin
-            then ~ 1 2 ((ta, a, tb1), c, (tb2, ab, tbc))
-            else ((ta, a, (tb1, c, tb2)), ab, tbc)
+          | node tb1 c tb2 → if coin
+            then ~ 1 2 (node (node ta a tb1) c (node tb2 ab tbc))
+            else (node (node ta a (node tb1 c tb2)) ab tbc)
         else match ~ 1 2 insert d ta with (* zig zig *)
-          | (ta1, c, ta2) → if coin
-            then ~ 1 2 (ta1, c, (ta2, a, (tb, ab, tbc)))
-            else (((ta1, c, ta2), a, tb), ab, tbc)
+          | node ta1 c ta2 → if coin
+            then ~ 1 2 (node ta1 c (node ta2 a (node tb ab tbc)))
+            else (node (node (node ta1 c ta2) a tb) ab tbc)

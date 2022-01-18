@@ -22,5 +22,5 @@ merge h1 h2 = match h1 with
   | node h1l h1x h1r → match h2 with
     | leaf            → (node h1l h1x h1r)
     | node h2l h2x h2r → if h1x < h2x
-      then (node (~ merge (node (node h2l h2x h2r) h1r)) h1x h1l)
-      else (node (~ merge (node (node h1l h1x h1r) h2r)) h2x h2l)
+      then (node (~ merge (node h2l h2x h2r) h1r) h1x h1l)
+      else (node (~ merge (node h1l h1x h1r) h2r) h2x h2l)

@@ -14,7 +14,7 @@ insert x h = (meld (node leaf x leaf) h)
 
 del_min ∷ Ord α ⇒ α ⨯ Tree α → (Tree α ⨯ α)
 del_min z h = match h with
-  | leaf      → (leaf, z)
+  | leaf       → (leaf, z)
   | node l x r → ((meld l r), x)
 
 meld ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α
