@@ -11,7 +11,7 @@ and ∷ Tree Bool → Bool
 and t =
   match t with
     | leaf → true
-    | (l, x, r) →
+    | node l x r →
       if and l
         then if x then and r
                   else false
@@ -21,7 +21,7 @@ or ∷ Tree Bool → Bool
 or t =
   match t with
     | leaf → false
-    | (l, x, r) →
+    | node l x r →
       if or l then true
               else if x then true
                         else or r;
@@ -35,28 +35,28 @@ all f t = and (map f t);
 map ∷ (α → β) ⨯ Tree α → Tree β
 map f t =
   match t with
-    | (l, x, r) → (map f l, f x, map f r);
+    | node l x r → (node (map f l) (f x) (map f r));
 
 fold ∷ (β * α → β) * β ⨯ Tree α → β
 fold f z t =
   match t with
     | leaf → z
-    | (l, x, r) → f (f (fold f z l) x) (fold f z t);
+    | node l x r → f (f (fold f z l) x) (fold f z t);
 
 zipWith ∷ (a * β → γ) ⨯ Tree α ⨯ Tree β → Tree γ
 zipWith f t u =
   match t with
-    | (l, x, r) →
+    | node l x r →
         match u with
-          | (v, y, w) → let l' = zipWith f l v in
+          | node v y w → let l' = zipWith f l v in
                          let r' = zipWith f r w in
-                         (l', f x y, r');
+                         (node l' (f x y) r');
 
 n1 ∷ (α → Tree β) * a * β ⨯ Tree β → Tree β
 n1 f x y z =
   let l = f x in
-  let r = (l, y, z)
+  let r = (node l y z)
   in
-  (l, y, z);
+  (node l y z);
 
 *)

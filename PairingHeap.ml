@@ -17,12 +17,12 @@
 (**
  * Original definition:
  *
- *   is_root h = (case h of leaf → true | (l, x, r) → r == leaf)
+ *   is_root h = (case h of leaf → true | node l x r → r == leaf)
  *)
 is_root ∷ Tree α → Bool
 is_root h = match h with
   | leaf      → true
-  | (_, _, r) → match r with
+  | node _ _ r → match r with
     | leaf → true
     | _    → false
 
@@ -30,17 +30,17 @@ is_root h = match h with
  * Original definition:
  *
  *   pheap leaf = true
- *   pheap (l, x, r) = (pheap l /\ pheap r /\ (\forall y \in set_tree l. x <= y))
+ *   pheap (node l x r) = (pheap l /\ pheap r /\ (\forall y \in set_tree l. x <= y))
  *)
 pheap ∷ Ord α ⇒ Tree α → Bool
 pheap h = match h with
   | leaf → true
-  | (l, x, r) → (Bool.and (Bool.and (~ pheap l) (~ pheap r)) (~ all_leq l x))
+  | node l x r → (Bool.and (Bool.and (~ pheap l) (~ pheap r)) (~ all_leq l x))
 
 all_leq ∷ Ord α ⇒ Tree α ⨯ α → Bool
 all_leq t x = match t with
   | leaf → true
-  | (l, y, r) → if y > x
+  | node l y r → if y > x
     then false
     else (Bool.and (~ all_leq l x) (~ all_leq r x))
 
@@ -48,33 +48,33 @@ all_leq t x = match t with
  * Original definition:
  *
  *   link leaf = leaf
- *   link (lx, x, leaf) = (lx, x, leaf)
- *   link (lx, x, (ly, y, ry)) = (if x < y then ((ly, y, lx), x, ry) else ((lx, x, ly), y, ry))
+ *   link (node lx x leaf) = (node lx x leaf)
+ *   link (node lx x (node ly y ry)) = (if x < y then (node (node ly y lx) x ry) else (node (node lx x ly) y ry))
  *)
 link ∷ Ord α ⇒ Tree α → Tree α
 link h = match h with
-  | (lx, x, rx) → match rx with
-    | leaf        → (lx, x, leaf)
-    | (ly, y, ry) → if x < y
-      then ((ly, y, lx), x, ry)
-      else ((lx, x, ly), y, ry)
+  | node lx x rx → match rx with
+    | leaf        → (node lx x leaf)
+    | node ly y ry → if x < y
+      then (node (node ly y lx) x ry)
+      else (node (node lx x ly) y ry)
 
 insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α | [[0 ↦ 1, (1 2) ↦ 6] → [0 ↦ 1, (0 2) ↦ 1], {}]
-insert x h = (merge (leaf, x, leaf) h)
+insert x h = (merge (node leaf x leaf) h)
 
 insert_isolated ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 insert_isolated x h = match h with
-  | leaf       → (leaf, x, leaf)
-  | (ly, y, _) → if x < y
-    then ((ly, y, leaf), x, leaf)
-    else ((leaf, x, ly), y, leaf)
+  | leaf       → (node leaf x leaf)
+  | node ly y _ → if x < y
+    then (node (node ly y leaf) x leaf)
+    else (node (node leaf x ly) y leaf)
 
 (**
  * Original definition:
  *
  *   merge leaf h = h
  *   merge h leaf = h
- *   merge (lx, x, leaf) (ly, y, leaf) = link (lx, x, (ly, y, leaf))
+ *   merge (node lx x leaf) (node ly y leaf) = link (node lx x (node ly y leaf))
  *
  * But note that we cannot restrict ourselves to the arguments having
  * a right-subtree equal to leaf.
@@ -84,13 +84,13 @@ insert_isolated x h = match h with
  * As potential function we take:
  *
  *   Phi leaf      := 0
- *   Phi (l, _, r) := Phi l + Phi r + log' |l| + log' |r|
+ *   Phi (node l _ r) := Phi l + Phi r + log' |l| + log' |r|
  *
  * where
  *
- *   |leaf| := 1    and    |(l, _, r)| := |l| + |r|
+ *   |leaf| := 1    and    |node l _ r| := |l| + |r|
  *
- * Let h1 := (lx, x, leaf) and h2 := (ly, y, leaf)
+ * Let h1 := (node lx x leaf) and h2 := (node ly y leaf)
  *
  * We want to show
  *
@@ -101,11 +101,11 @@ insert_isolated x h = match h with
  * First, observe following equality
  *
  *     Phi (merge h1 h2)
- *   = Phi (link (lx, x, h2))                                       (def. merge)
- *   = Phi ((ly, y, lx), x, leaf)                                    (w.l.o.g. by def. link)
- *   = Phi (ly, y, lx) + Phi leaf + log' |(ly, y, lx)| + log' |leaf|  (def. Phi)
- *   = Phi (ly, y, lx) + 0       + log' |(ly, y, lx)| + 0           (def. Phi, |_|)
- *   = Phi (ly, y, lx) + log' (|ly| + |lx|)                         (def. |_|)
+ *   = Phi (link (node lx x h2))                                       (def. merge)
+ *   = Phi (node (node ly y lx) x leaf)                                    (w.l.o.g. by def. link)
+ *   = Phi (node ly y lx) + Phi leaf + log' |(node ly y lx)| + log' |leaf|  (def. Phi)
+ *   = Phi (node ly y lx) + 0       + log' |(node ly y lx)| + 0           (def. Phi, |_|)
+ *   = Phi (node ly y lx) + log' (|ly| + |lx|)                         (def. |_|)
  *   = Phi ly + Phi lx + log' |lx| + log' |ly| + log' (|ly| + |lx|) (def. Phi)
  *
  * Then, it follows that
@@ -124,7 +124,7 @@ insert_isolated x h = match h with
  *
  * For the more general case:
  *
- * Let h1 := (lx, x, rx) and h2 := (ly, y, ry)
+ * Let h1 := (node lx x rx) and h2 := (node ly y ry)
  *
  * We want to show
  *
@@ -135,16 +135,16 @@ insert_isolated x h = match h with
  * First, observe following equality
  *
  *     Phi (merge h1 h2)
- *   = Phi (link (lx, x, (ly, y, leaf)))    (def. merge)
+ *   = Phi (link (node lx x (node ly y leaf)))    (def. merge)
  *   Case x < y:
- *     = Phi ((ly, y, lx), x, leaf)                                    (def. link)
- *     = Phi (ly, y, lx) + Phi leaf + log' |(ly, y, lx)| + log' |leaf|  (def. Phi)
- *     = Phi (ly, y, lx) + 0       + log' (|ly| + |lx|) + 0           (def. Phi, |_|)
+ *     = Phi (node (node ly y lx) x leaf)                                    (def. link)
+ *     = Phi (node ly y lx) + Phi leaf + log' |(node ly y lx)| + log' |leaf|  (def. Phi)
+ *     = Phi (node ly y lx) + 0       + log' (|ly| + |lx|) + 0           (def. Phi, |_|)
  *     = Phi ly + Phi lx + log' |lx| + log' |ly| + log' (|ly| + |lx|) (def. Phi)
  *   Case x >= y:
- *     = Phi ((lx, x, ly), y, leaf)                                    (def. link)
- *     = Phi (lx, x, ly) + Phi leaf + log' |(lx, x, ly)| + log' |leaf|  (def. Phi)
- *     = Phi (lx, x, ly) + 0       + log' (|lx| + |ly|) + 0           (def. Phi, |_|)
+ *     = Phi (node (node lx x ly) y leaf)                                    (def. link)
+ *     = Phi (node lx x ly) + Phi leaf + log' |(node lx x ly)| + log' |leaf|  (def. Phi)
+ *     = Phi (node lx x ly) + 0       + log' (|lx| + |ly|) + 0           (def. Phi, |_|)
  *     = Phi lx + Phi ly + log' |ly| + log' |lx| + log' (|lx| + |ly|) (def. Phi)
  *   = Phi lx + Phi ly + log' |lx| + log' |ly| + log' (|lx| + |ly|) (comm. +)
  *
@@ -162,74 +162,74 @@ insert_isolated x h = match h with
 merge ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α | [[0 ↦ 1, 1 ↦ 1, (0 0 2) ↦ 4, (1 1 0) ↦ 2] → [0 ↦ 1, (0 2) ↦ 2], {[] → []}]
 merge h1 h2 = match h1 with
   | leaf        → h2
-  | (lx, x, rx) → match h2 with
-    | leaf        → (lx, x, rx)
-    | (ly, y, ry) → (link (lx, x, (ly, y, leaf)))
+  | node lx x rx → match h2 with
+    | leaf        → (node lx x rx)
+    | node ly y ry → (link (node lx x (node ly y leaf)))
 
 (**
  * Here, link is inlined. Since `merge` calls `leaf`
- * on `(lx, x, (ly, y, leaf))` one can directly
+ * on `(lx, x, (node ly y leaf))` one can directly
  * inline the node-branch of the second match
  * in the definition of link, i.e.
  *
- *   link (lx, x, (ly, y, leaf)) = if x < y
- *       then ((ly, y, lx), x, leaf)
- *       else ((lx, x, ly), y, leaf)
+ *   link (node lx x (node ly y leaf)) = if x < y
+ *       then (node (node ly y lx) x leaf)
+ *       else (node (node lx x ly) y leaf)
  *)
 merge_isolated ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α | [[0 ↦ 1 / 2, 1 ↦ 1 / 2, (0 0 2) ↦ 2, (1 1 0) ↦ 1 / 2] → [0 ↦ 1 / 2, (0 2) ↦ 1], {[] → []}]
 merge_isolated h1 h2 = match h1 with
   | leaf        → h2
-  | (lx, x, rx) → match h2 with
-    | leaf        → (lx, x, rx)
-    | (ly, y, ry) → if x < y
-      then ((ly, y, lx), x, leaf)
-      else ((lx, x, ly), y, leaf)
+  | node lx x rx → match h2 with
+    | leaf        → (node lx x rx)
+    | node ly y ry → if x < y
+      then (node (node ly y lx) x leaf)
+      else (node (node lx x ly) y leaf)
 
 del_min ∷ Ord α ⇒ Tree α → Tree α
 del_min h = match h with
-  | (l, _, _) → (~ pass2 (~ pass1 l))
+  | node l _ _ → (~ pass2 (~ pass1 l))
 
 (* Same as `del_min` but with `merge_pairs_isolated` instead of `pass1` and `pass2`. *)
 del_min_via_merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α
 del_min_via_merge_pairs_isolated h = match h with
-  | (l, _, _) → ~ merge_pairs_isolated l
+  | node l _ _ → ~ merge_pairs_isolated l
 
 del_min_via_merge_pairs ∷ Ord α ⇒ Tree α → Tree α
 del_min_via_merge_pairs h = match h with
-  | (l, _, _) → ~ merge_pairs l
+  | node l _ _ → ~ merge_pairs l
 
 pass1 ∷ Ord α ⇒ Tree α → Tree α | [[0 ↦ 3, (0 2) ↦ 1, (1 0) ↦ 2] → [0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 1], {[(1 0) ↦ 2] → [(1 0) ↦ 2], [(1 0) ↦ 2, (1 1) ↦ 2, (1 2) ↦ 2] → [(1 0) ↦ 2], [(1 0) ↦ 1] → [(1 0) ↦ 1], [] → []}]
 pass1 h = match h with
-  | (lx, x, rx) → match rx with
-    | leaf        → (lx, x, leaf)
-    | (ly, y, ry) → (~ link (lx, x, (ly, y, ~ pass1 ry)))
+  | node lx x rx → match rx with
+    | leaf        → (node lx x leaf)
+    | node ly y ry → (~ link (node lx x (node ly y (~ pass1 ry))))
 
 pass2 ∷ Ord α ⇒ Tree α → Tree α | [[0 ↦ 3, (0 2) ↦ 1, (1 0) ↦ 4] → [0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 1], {[(1 0) ↦ 2] → [(1 0) ↦ 2], [] → [], [(1 0) ↦ 2, (1 1) ↦ 2, (1 2) ↦ 2] → [(1 0) ↦ 2]}]
 pass2 h = match h with
-  | (l, x, r) → (~ link (l, x, ~ pass2 r))
+  | node l x r → (~ link (node l x (~ pass2 r)))
 
 merge_pairs ∷ Ord α ⇒ Tree α → Tree α
 merge_pairs h = match h with
-  | (lx, x, rx) → match rx with
-    | leaf        → (lx, x, leaf)
-    | (ly, y, ry) → (~ link (~ link (lx, x, (ly, y, ~ merge_pairs ry))))
+  | node lx x rx → match rx with
+    | leaf        → (node lx x leaf)
+    | node ly y ry → (~ link (~ link (node lx x (node ly y (~ merge_pairs ry)))))
 
 (* The same as `merge_pairs` but with `link` inlined. *)
 merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α | [[0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 3] → [0 ↦ 1, (0 2) ↦ 1], {[] → [], [(1 0) ↦ 1] → [(1 0) ↦ 1]}]
 merge_pairs_isolated h = match h with
-  | (la, a, ra) → match ra with
-    | leaf        → (la, a, leaf)
-    | (lb, b, rb) → match ~ merge_pairs_isolated rb with
+  | node la a ra → match ra with
+    | leaf        → (node la a leaf)
+    | node lb b rb → match ~ merge_pairs_isolated rb with
       | leaf → if a < b
-        then ((lb, b, la), a, leaf)
-        else ((la, a, lb), b, leaf)
-      | (lc, c, rc) → if a < b
+        then (node (node lb b la) a leaf)
+        else (node (node la a lb) b leaf)
+      | node lc c rc → if a < b
         then if a < c
-          then ((lc, c, (lb, b, la)), a, rc)
-          else (((lb, b, la), a, lc), c, rc)
+          then (node (node lc c (node lb b la)) a rc)
+          else (node (node (node lb b la) a lc) c rc)
         else if b < c
-          then ((lc, c, (la, a, lb)), b, rc)
-          else (((la, a, lb), b, lc), c, rc)
+          then (node (node lc c (node la a lb)) b rc)
+          else (node (node (node la a lb) b lc) c rc)
 
 merge_pairs_via_pass ∷ Ord α ⇒ Tree α → Tree α
 merge_pairs_via_pass h = pass2 (pass1 h)

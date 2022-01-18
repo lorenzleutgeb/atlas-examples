@@ -1,11 +1,11 @@
 f ∷ Tree α ⨯ α ⨯ Tree α → Tree α
-f l x r = (l, x, r);
+f l x r = (node l x r);
 
 g ∷ Tree α ⨯ Tree α → Tree α
 g t e1 =
   match t with
     | leaf      → e1
-    | (l, x, r) → (l, x, r);
+    | node l x r → (node l x r);
 
 h ∷  Tree α ⨯ Tree α → Tree α
 h x y = x;
@@ -29,7 +29,7 @@ k x y z =
       let l = leaf in
       let r = leaf
       in
-      (l, z, r);
+      (node l z r);
 
 (* test for (w ∷ var) rule *)
 l1 ∷ Ord α ⇒ α ⨯ α ⨯ Tree β ⨯ β → Tree β
@@ -41,11 +41,11 @@ l1 x y t a =
     else
       let n = leaf
       in
-      (t, a, n);
+      (node t a n);
 
 m ∷ Tree α ⨯ α ⨯ α → Tree α
 m t x y =
-  let s = (t, y, t)
+  let s = (node t y t)
   in
-  (t, x, s);
+  (node t x s);
 

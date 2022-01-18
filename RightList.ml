@@ -1,15 +1,15 @@
 cons ∷ α ⨯ Tree α → Tree α
-cons x t = (leaf, x, t)
+cons x t = (node leaf x t)
 
 cons_cons ∷ α ⨯ α ⨯ Tree α → Tree α
-cons_cons x y t = (leaf, y, (leaf, x, t))
+cons_cons x y t = (node leaf y (node leaf x t))
 
 (**
  * In our setting the tail of leaf is leaf.
  *)
 tl ∷ Tree α → Tree α
 tl t = match t with
-  | (l, x, r) → r
+  | node l x r → r
 
 (**
  * The number of recursive calls is equivalent to
@@ -29,7 +29,7 @@ tl t = match t with
 append ∷ Tree α ⨯ Tree α → Tree α
 append t1 t2 = match t1 with
   | leaf      → t2
-  | (l, x, r) → (cons x (append r t2))
+  | node l x r → (cons x (append r t2))
 
 (**
  * This function is equivalent to
@@ -41,14 +41,14 @@ append t1 t2 = match t1 with
  *)
 descend ∷ Tree α → Tree β
 descend t = match t with
-  | (l, m, r) → (descend r)
+  | node l m r → (descend r)
 
 is ∷ Tree α → Bool
 is t = match t with
   | leaf        → true
-  | (lx, x, rx) → match lx with
+  | node lx x rx → match lx with
     | leaf        → is rx
-    | (ly, y, ry) → false
+    | node ly y ry → false
 
 (**
  * This function is equivalent to
@@ -63,7 +63,7 @@ is t = match t with
  *)
 iter ∷ Tree α → Tree α
 iter t = match t with
-  | (l, x, r) → (cons x (iter r))
+  | node l x r → (cons x (iter r))
 
 (**
  * The number of recursive calls is equivalent to
@@ -80,4 +80,4 @@ iter t = match t with
 rev_append ∷ Tree α ⨯ Tree α → Tree α
 rev_append t1 t2 = match t1 with
   | leaf      → t2
-  | (l, x, r) → (rev_append r (cons x t2))
+  | node l x r → (rev_append r (cons x t2))

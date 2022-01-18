@@ -1,12 +1,12 @@
 cons ∷ α ⨯ Tree α → Tree α
-cons x t = (t, x, leaf)
+cons x t = (node t x leaf)
 
 cons_cons ∷ α ⨯ α ⨯ Tree α → Tree α
-cons_cons x y t = ((t, x, leaf), y, leaf)
+cons_cons x y t = (node (node t x leaf) y leaf)
 
 tl ∷ Tree α → Tree α
 tl t = match t with
-  | (l, x, r) → l
+  | node l x r → l
 
 (**
  * The number of recursive calls is equivalent to
@@ -40,7 +40,7 @@ tl t = match t with
 append ∷ Tree α ⨯ Tree α → Tree α
 append t1 t2 = match t1 with
   | leaf      → t2
-  | (l, x, r) → (cons x (append l t2))
+  | node l x r → (cons x (append l t2))
 
 (**
  * This function is equivalent to
@@ -108,7 +108,7 @@ append t1 t2 = match t1 with
  *)
 descend ∷ Tree α → Tree β
 descend t = match t with
-  | (l, x, r) → (descend l)
+  | node l x r → (descend l)
 
 (**
  * This function is equivalent to
@@ -120,7 +120,7 @@ descend t = match t with
  *)
 descend_on_first ∷ Tree α ⨯ Tree α → Tree β
 descend_on_first t1 t2 = match t1 with
-  | (l, x, r) → (descend_on_first l t2)
+  | node l x r → (descend_on_first l t2)
 
 (**
  * This function is equivalent to
@@ -132,19 +132,19 @@ descend_on_first t1 t2 = match t1 with
  *)
 descend_on_second ∷ Tree α ⨯ Tree α → Tree β
 descend_on_second t1 t2 = match t2 with
-  | (l, x, r) → (descend_on_second t1 l)
+  | node l x r → (descend_on_second t1 l)
 
 inorder ∷ Tree α ⨯ Tree α → Tree α
 inorder t1 t2 = match t1 with
   | leaf      → t2
-  | (l, x, r) → (inorder l (cons x (inorder r t2)))
+  | node l x r → (inorder l (cons x (inorder r t2)))
 
 is ∷ Tree α → Bool
 is t = match t with
   | leaf        → true
-  | (lx, x, rx) → match rx with
+  | node lx x rx → match rx with
     | leaf        → is lx
-    | (ly, y, ry) → false
+    | node ly y ry → false
 
 (**
  * This function is equivalent to
@@ -156,17 +156,17 @@ is t = match t with
  *)
 iter ∷ Tree α → Tree α
 iter t = match t with
-  | (l, x, r) → (cons x (iter l))
+  | node l x r → (cons x (iter l))
 
 postorder ∷ Tree α ⨯ Tree α → Tree α
 postorder t1 t2 = match t1 with
   | leaf      → t2
-  | (l, x, r) → (postorder l (postorder r (cons x t2)))
+  | node l x r → (postorder l (postorder r (cons x t2)))
 
 preorder ∷ Tree α ⨯ Tree α → Tree α
 preorder t1 t2 = match t1 with
   | leaf      → t2
-  | (l, x, r) → (cons x (preorder l (preorder r t2)))
+  | node l x r → (cons x (preorder l (preorder r t2)))
 
 (**
  * The number of recursive calls is equivalent to
@@ -183,4 +183,4 @@ preorder t1 t2 = match t1 with
 rev_append ∷ Tree α ⨯ Tree α → Tree α
 rev_append t1 t2 = match t1 with
   | leaf      → t2
-  | (l, x, r) → (rev_append l (cons x t2))
+  | node l x r → (rev_append l (cons x t2))
