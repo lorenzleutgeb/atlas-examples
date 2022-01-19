@@ -14,7 +14,7 @@ del_min z h = match h with
   | node l x r → ((merge l r), x)
 
 insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
-insert x h = (merge (node leaf a leaf) h)
+insert x h = (merge (node leaf x leaf) h)
 
 merge ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α
 merge h1 h2 = match h1 with
