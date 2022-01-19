@@ -8,14 +8,14 @@
  *   https://doi.org/10.1007/s10817-018-9459-3
  *)
 
-del_min ∷ α ⨯ Tree α → (Tree α ⨯ α)
-del_min z t = match t with
+delete_min ∷ α ⨯ Tree α → (Tree α ⨯ α)
+delete_min z t = match t with
   | leaf         → (leaf, z)
   | node tab b tc → match tab with
     | leaf        → (tc, b)
     | node ta a tb → match ta with
       | leaf → ((node tb b tc), a)
-      | ta   → match ~ 1 2 del_min z ta with
+      | ta   → match ~ 1 2 delete_min z ta with
         | (t1, x) → if coin
           then ~ 1 2 ((node t1 a (node tb b tc)), x)
           else ((node (node t1 a tb) b tc), x)

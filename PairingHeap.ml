@@ -11,7 +11,7 @@
 (**
  * Exposed definitions are
  *  - insert
- *  - del_min
+ *  - delete_min
  *)
 
 (**
@@ -185,17 +185,17 @@ merge_isolated h1 h2 = match h1 with
       then (node (node ly y lx) x leaf)
       else (node (node lx x ly) y leaf)
 
-del_min ∷ Ord α ⇒ Tree α → Tree α
-del_min h = match h with
+delete_min ∷ Ord α ⇒ Tree α → Tree α
+delete_min h = match h with
   | node l _ _ → (~ pass2 (~ pass1 l))
 
-(* Same as `del_min` but with `merge_pairs_isolated` instead of `pass1` and `pass2`. *)
-del_min_via_merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α
-del_min_via_merge_pairs_isolated h = match h with
+(* Same as `delete_min` but with `merge_pairs_isolated` instead of `pass1` and `pass2`. *)
+delete_min_via_merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α
+delete_min_via_merge_pairs_isolated h = match h with
   | node l _ _ → ~ merge_pairs_isolated l
 
-del_min_via_merge_pairs ∷ Ord α ⇒ Tree α → Tree α
-del_min_via_merge_pairs h = match h with
+delete_min_via_merge_pairs ∷ Ord α ⇒ Tree α → Tree α
+delete_min_via_merge_pairs h = match h with
   | node l _ _ → ~ merge_pairs l
 
 pass1 ∷ Ord α ⇒ Tree α → Tree α | [[0 ↦ 3, (0 2) ↦ 1, (1 0) ↦ 2] → [0 ↦ 1, (0 2) ↦ 1, (1 0) ↦ 1], {[(1 0) ↦ 2] → [(1 0) ↦ 2], [(1 0) ↦ 2, (1 1) ↦ 2, (1 2) ↦ 2] → [(1 0) ↦ 2], [(1 0) ↦ 1] → [(1 0) ↦ 1], [] → []}]
