@@ -38,7 +38,7 @@ splay a t = match t with
                   then ~ 1 2 (node (node (node cl c bl) b al) a1 ar)
                   else (node cl c (node bl b (node al a1 ar)))
 
-insert ∷ Eq α ⇒ α ⨯ Tree α → Tree α
+insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 insert a t = match t with
   | node cl c cr → if a == c
     then (node cl c cr)
