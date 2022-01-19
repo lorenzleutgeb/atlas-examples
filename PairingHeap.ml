@@ -135,28 +135,28 @@ insert_isolated x h = match h with
  * First, observe following equality
  *
  *     Phi (merge h1 h2)
- *   = Phi (link (node lx x (node ly y leaf)))    (def. merge)
+ *   = Phi (link (node lx x (node ly y leaf)))                                (def. merge)
  *   Case x < y:
- *     = Phi (node (node ly y lx) x leaf)                                    (def. link)
+ *     = Phi (node (node ly y lx) x leaf)                                     (def. link)
  *     = Phi (node ly y lx) + Phi leaf + log' |(node ly y lx)| + log' |leaf|  (def. Phi)
- *     = Phi (node ly y lx) + 0       + log' (|ly| + |lx|) + 0           (def. Phi, |_|)
- *     = Phi ly + Phi lx + log' |lx| + log' |ly| + log' (|ly| + |lx|) (def. Phi)
+ *     = Phi (node ly y lx) + 0       + log' (|ly| + |lx|) + 0                (def. Phi, |_|)
+ *     = Phi ly + Phi lx + log' |lx| + log' |ly| + log' (|ly| + |lx|)         (def. Phi)
  *   Case x >= y:
- *     = Phi (node (node lx x ly) y leaf)                                    (def. link)
+ *     = Phi (node (node lx x ly) y leaf)                                     (def. link)
  *     = Phi (node lx x ly) + Phi leaf + log' |(node lx x ly)| + log' |leaf|  (def. Phi)
- *     = Phi (node lx x ly) + 0       + log' (|lx| + |ly|) + 0           (def. Phi, |_|)
- *     = Phi lx + Phi ly + log' |ly| + log' |lx| + log' (|lx| + |ly|) (def. Phi)
- *   = Phi lx + Phi ly + log' |lx| + log' |ly| + log' (|lx| + |ly|) (comm. +)
+ *     = Phi (node lx x ly) + 0       + log' (|lx| + |ly|) + 0                (def. Phi, |_|)
+ *     = Phi lx + Phi ly + log' |ly| + log' |lx| + log' (|lx| + |ly|)         (def. Phi)
+ *   = Phi lx + Phi ly + log' |lx| + log' |ly| + log' (|lx| + |ly|)           (comm. +)
  *
  * Then, it follows that
  *
  *      Phi (merge h1 h2) - Phi h1 - Phi h2
- *    = Phi lx + Phi ly + log' |lx| + log' |ly| + log' (|lx + |ly|) (def. Phi)
+ *    = Phi lx + Phi ly + log' |lx| + log' |ly| + log' (|lx + |ly|)           (def. Phi)
  *    - Phi lx - Phi rx - log' |lx| - log' |rx|
  *    - Phi ly - Phi ry - log' |ly| - log' |ry|
  *    = log' (|ly| + |lx|) - Phi rx - log' |rx| - Phi ry - log' |ry|
- *   <= log' (|ly| + |lx|)                       (log' |_| >= 0, Phi _ >= 0, def. -)
- *   <= log' (|lx| + |rx| + 1 + |ly| + |ry| + 1) (monotone log'))
+ *   <= log' (|ly| + |lx|)                             (log' |_| >= 0, Phi _ >= 0, def. -)
+ *   <= log' (|lx| + |rx| + 1 + |ly| + |ry| + 1)                          (monotone log')
  *    = log' (|h1| + |h2|)
  *)
 merge ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α | [[0 ↦ 1, 1 ↦ 1, (0 0 2) ↦ 4, (1 1 0) ↦ 2] → [0 ↦ 1, (0 2) ↦ 2], {[] → []}]

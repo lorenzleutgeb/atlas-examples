@@ -36,39 +36,3 @@ f7 ∷ Tree α * α → Tree α
 f7 t a = match t with
   | leaf        → (node leaf a leaf)
   | node tl x tr → let t1 ≔ ~ 1 2 (f7 tl a) in t1
-
-h ∷ Tree α → Tree α
-h t = let t1 ≔ ~ 1 2 (h t) in t1
-
-id ∷ Tree α → Tree α
-id t = t
-
-id2 ∷ Tree α → Tree α
-id2 t = id t
-
-id3 ∷ Tree α → Tree α
-id3 t = ~ id t
-
-id4 ∷ Tree α → Tree α
-id4 t = let d ≔ ~ id t in d
-
-test ∷ Tree α ⨯ Tree α ⨯ Tree α ⨯ α → Tree α
-test a b c dummy = let c1 = id c in (node (node (node c1 dummy b) dummy a) dummy leaf)
-
-test5 ∷ Tree α ⨯ Tree α ⨯ Tree α ⨯ α → Tree α
-test5 a b c dummy = let c' = id c in (node (node c' dummy b) dummy a)
-
-test6 ∷ Tree α ⨯ Tree α ⨯ α → Tree α
-test6 b c dummy = let c' = id c in (node c' dummy b)
-
-test7 ∷ Tree α ⨯ Tree α ⨯ Tree α ⨯ α → Tree α
-test7 a b c dummy = let c' = id c in (node c' dummy b)
-
-test2 ∷ Tree α ⨯ Tree α ⨯ α → Tree α
-test2 b c dummy = let c1 = id c in (node (node c1 dummy b) dummy leaf)
-
-test3 ∷ Tree α ⨯ α → Tree α
-test3 c dummy = let c1 = id c in (node c1 dummy leaf)
-
-test4 ∷ Tree α ⨯ α → Tree α
-test4 c dummy = (node c dummy leaf)
