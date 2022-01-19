@@ -30,8 +30,15 @@ singleton_let x = (let n = leaf in
   (let m = leaf in (node n x m))
 )
 
+testx ∷ Tree α ⨯ Tree α ⨯ Tree α ⨯ α → Tree α
+testx t e d z = match id t with
+ | node dl dx dr → (node (node (node dl dx dr) z e) z d)
+
 id ∷ α → α
 id x = x
+
+id_tree ∷ Tree α → Tree α
+id_tree x = x
 
 id_match ∷ Tree α → Tree α
 id_match t = match t with
@@ -411,9 +418,22 @@ insert_zigzig_coin al a ar b br c cr = if coin
 
 insert_zigzig_rec ∷ α ⨯ Tree α ⨯ α ⨯ Tree α ⨯ α ⨯ Tree α → Tree α
 insert_zigzig_rec a bl b br c cr = match ~ 1 2 insert_dummy bl with
-  | node al a1 ar → if coin
-    then ~ 1 2 (node al a1 (node ar b (node br c cr)))
-    else (node (node (node al a1 ar) b br) c cr)
+  | node al a1 ar → insert_zigzig_build al a ar b br c cr
+
+insert_zigzig_build ∷ Tree α ⨯ α ⨯ Tree α ⨯ α ⨯ Tree α ⨯ α ⨯ Tree α → Tree α
+insert_zigzig_build al a ar b br c cr = if coin
+  then node_builder_1 al a ar b br c cr (*~ 1 2 (node al a (node ar b (node br c cr)))*)
+  else node_builder_2 al a ar b br c cr (*node (node (node al a ar) b br) c cr*)
+
+node_builder_1 ∷ Tree α ⨯ α ⨯ Tree α ⨯ α ⨯ Tree α ⨯ α ⨯ Tree α → Tree α
+node_builder_1 al a1 ar b br c cr = ~ 1 2 (node al a1 (node ar b (node br c cr)))
+
+node_builder_2 ∷ Tree α ⨯ α ⨯ Tree α ⨯ α ⨯ Tree α ⨯ α ⨯ Tree α → Tree α
+node_builder_2 al a1 ar b br c cr = (node (node (node al a1 ar) b br) c cr)
+
+insert_zigzig_rec_coin ∷ α ⨯ Tree α ⨯ α ⨯ Tree α ⨯ α ⨯ Tree α → Tree α
+insert_zigzig_rec_coin a bl b br c cr = match ~ 1 2 insert_dummy bl with
+  | node al a1 ar → insert_zigzig_coin al a ar b br c cr
 
 insert_zigzig_match ∷ α ⨯ Tree α ⨯ α ⨯ Tree α ⨯ α ⨯ Tree α → Tree α
 insert_zigzig_match a bl b br c cr = match bl with
@@ -453,7 +473,7 @@ insert_zigzig_match_t a t = match t with
     then (node (node bl a br) c cr) (* Found. No rotation. *)
     else match bl with
       | leaf → (node (node leaf a leaf) b (node br c cr))
-      | bl   → match ~ 1 2 insert_dummy bl with
+      | bl   → match ~ 1 2 insert_zigzig_match_t a bl with
         | node al a1 ar → if coin
           then ~ 1 2 (node al a1 (node ar b (node br c cr)))
           else (node (node (node al a1 ar) b br) c cr)
