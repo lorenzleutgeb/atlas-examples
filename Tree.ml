@@ -1,3 +1,7 @@
+(**
+ * Definitions that do not assume/preserve ordering.
+ *)
+
 id ∷ Tree α → Tree α
 id x = x
 
@@ -17,11 +21,11 @@ iter t = match t with
 
 left ∷ Tree α → Tree α
 left t = match t with
-  | node l x r → l
+  | node t' _ _ → t'
 
 right ∷ Tree α → Tree α
 right t = match t with
-  | node l x r → r
+  | node _ _ t' → t'
 
 flip ∷ Tree α → Tree α
 flip t = match t with
@@ -35,9 +39,9 @@ empty t = match t with
   | leaf       → true
   | node r x l → false
 
-contains_unordered ∷ Eq α ⇒ α ⨯ Tree α → Bool
-contains_unordered x t = match t with
-  | leaf      → false
+contains ∷ Eq α ⇒ α ⨯ Tree α → Bool
+contains x t = match t with
+  | leaf       → false
   | node l y r → if x == y
     then true
-    else (Bool.or (contains_unordered x l) (contains_unordered x r))
+    else (Bool.or (contains x l) (contains x r))
