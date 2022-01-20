@@ -23,13 +23,13 @@ contains d t = match t with
 (**
  * Probabilistic model of SearchTree.delete
  *)
-delete ∷ Eq α ⇒ (α ⨯ Tree α) → Tree α
-delete d t = match t with
+delete ∷ Eq α ⇒ (α ⨯ α ⨯ Tree α) → Tree α
+delete z d t = match t with
   | node l a r → if a == d
     then match l with
       | leaf → r
-      | l    → match ~ SearchTree.delete_max l with
+      | l    → match ~ (SearchTree.delete_max z l) with
         | (ll, m) → node ll m r
     else if coin (* a < d *)
-      then ~ delete d l
-      else ~ delete d r
+      then ~ (delete z d l)
+      else ~ (delete z d r)

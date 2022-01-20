@@ -22,8 +22,8 @@ delete z d t = match t with
       | l    → match ~ SearchTree.delete_max z l with
         | (ll, m) → node ll m r
     else if a < d
-      then ~ delete d l
-      else ~ delete d r
+      then ~ delete z d l
+      else ~ delete z d r
 
 delete_max ∷ (α ⨯ Tree α) → (Tree α ⨯ α)
 delete_max z t = match t with
@@ -32,7 +32,7 @@ delete_max z t = match t with
     | leaf         → (cl, c)
     | node bl b br → match br with
       | leaf → ((node cl c bl), b)
-      | br   → match ~ delete_max br with
-        | (t', m) → match t' with
+      | br   → match ~ delete_max z br with
+        | (t1, m) → match t1 with
           | leaf         → (leaf, z)
           | node al a ar → (node (node (node cl c bl) b al) a ar, m)
