@@ -6,15 +6,10 @@
  *   Amortized Complexity Verified
  *   Journal of Automated Reasoning, Vol. 62, Iss. 3, pp. 367-391
  *   https://doi.org/10.1007/s10817-018-9459-3
+ *   https://dblp.org/rec/journals/jar/NipkowB19
  *)
 
-(**
- * Exposed definitions are
- *  - insert
- *  - delete
- *)
-
-splay ∷ Ord α ⇒ α ⨯ Tree α → Tree α | [[0 ↦ 1/2, (0 2) ↦ 1, (1 0) ↦ 3/2] → [0 ↦ 1/2, (0 2) ↦ 1], {[(1 0) ↦ 1] → [(1 0) ↦ 1], [(1 0) ↦ 1/2] → [(1 0) ↦ 1/2], [] → []}]
+splay ∷ Ord α ⇒ α ⨯ Tree α → Tree α
 splay a t = match t with
   | node cl c cr → if a == c
     then (node cl c cr)

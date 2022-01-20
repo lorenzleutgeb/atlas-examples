@@ -6,6 +6,7 @@
  *   Amortized Complexity Verified
  *   Journal of Automated Reasoning, Vol. 62, Iss. 3, pp. 367-391
  *   https://doi.org/10.1007/s10817-018-9459-3
+ *   https://dblp.org/rec/journals/jar/NipkowB19
  *)
 
 insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
