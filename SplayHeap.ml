@@ -9,7 +9,7 @@
  *   https://dblp.org/rec/journals/jar/NipkowB19
  *)
 
-insert ∷ Ord α ⇒ α ⨯ α ⨯ Tree α → Tree α
+insert ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α
 insert d x h = match ~ partition d x h with
   | leaf       → (node leaf x leaf)
   | node l _ r → (node l x r)
@@ -22,7 +22,7 @@ delete_min t = match t with
       | leaf → (node tb b tc)
       | ta   → (node (~ delete_min ta) a (node tb b tc))
 
-partition ∷ Ord α ⇒ α ⨯ α ⨯ Tree α → Tree α
+partition ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α
 partition d p t = match t with
   | node tab ab tbc → if ab <= p
     then match tbc with

@@ -19,10 +19,10 @@
 link ∷ Ord α ⇒ Tree α → Tree α
 link h = match h with
   | node lx x rx → match rx with
-    | leaf         → (node lx x leaf)
+    | leaf         → node lx x leaf
     | node ly y ry → if x < y
-      then (node (node ly y lx) x ry)
-      else (node (node lx x ly) y ry)
+      then node (node ly y lx) x ry
+      else node (node lx x ly) y ry
 
 (**
  * Original definition:
@@ -31,12 +31,12 @@ link h = match h with
  *   merge h leaf = h
  *   merge (node lx x leaf) (node ly y leaf) = link (node lx x (node ly y leaf))
  *)
-merge ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α
+merge ∷ Ord α ⇒ (Tree α ⨯ Tree α) → Tree α
 merge h1 h2 = match h1 with
   | leaf         → h2
   | node lx x rx → match h2 with
-    | leaf         → (node lx x rx)
-    | node ly y ry → (~ link (node lx x (node ly y leaf)))
+    | leaf         → node lx x rx
+    | node ly y ry → ~ link (node lx x (node ly y leaf))
 
 (**
  * Here, link is inlined. Since `merge` calls `leaf`
@@ -48,24 +48,24 @@ merge h1 h2 = match h1 with
  *       then (node (node ly y lx) x leaf)
  *       else (node (node lx x ly) y leaf)
  *)
-merge_isolated ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α
+merge_isolated ∷ Ord α ⇒ (Tree α ⨯ Tree α) → Tree α
 merge_isolated h1 h2 = match h1 with
   | leaf        → h2
   | node lx x rx → match h2 with
-    | leaf        → (node lx x rx)
+    | leaf        → node lx x rx
     | node ly y ry → if x < y
-      then (node (node ly y lx) x leaf)
-      else (node (node lx x ly) y leaf)
+      then node (node ly y lx) x leaf
+      else node (node lx x ly) y leaf
 
-insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
+insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α
 insert x h = (merge (node leaf x leaf) h)
 
-insert_isolated ∷ Ord α ⇒ α ⨯ Tree α → Tree α
+insert_isolated ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α
 insert_isolated x h = match h with
-  | leaf        → (node leaf x leaf)
+  | leaf        → node leaf x leaf
   | node ly y _ → if x < y
-    then (node (node ly y leaf) x leaf)
-    else (node (node leaf x ly) y leaf)
+    then node (node ly y leaf) x leaf
+    else node (node leaf x ly) y leaf
 
 (* Same as `delete_min` but with `merge_pairs_isolated` instead of `pass1` and `pass2`. *)
 delete_min_via_merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α
@@ -76,18 +76,18 @@ delete_min_via_merge_pairs_isolated h = match h with
 merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α
 merge_pairs_isolated h = match h with
   | node la a ra → match ra with
-    | leaf         → (node la a leaf)
+    | leaf         → node la a leaf
     | node lb b rb → match ~ merge_pairs_isolated rb with
       | leaf → if a < b
-        then (node (node lb b la) a leaf)
-        else (node (node la a lb) b leaf)
+        then node (node lb b la) a leaf
+        else node (node la a lb) b leaf
       | node lc c rc → if a < b
         then if a < c
-          then (node (node lc c (node lb b la)) a rc)
-          else (node (node (node lb b la) a lc) c rc)
+          then node (node lc c (node lb b la)) a rc
+          else node (node (node lb b la) a lc) c rc
         else if b < c
-          then (node (node lc c (node la a lb)) b rc)
-          else (node (node (node la a lb) b lc) c rc)
+          then node (node lc c (node la a lb)) b rc
+          else node (node (node la a lb) b lc) c rc
 
 delete_min ∷ Ord α ⇒ Tree α → Tree α
 delete_min h = match h with
@@ -96,25 +96,25 @@ delete_min h = match h with
 merge_pairs ∷ Ord α ⇒ Tree α → Tree α
 merge_pairs h = match h with
   | node lx x rx → match rx with
-    | leaf         → (node lx x leaf)
+    | leaf         → node lx x leaf
     | node ly y ry → (~ link (~ link (node lx x (node ly y (~ merge_pairs ry)))))
 
 pass1 ∷ Ord α ⇒ Tree α → Tree α
 pass1 h = match h with
   | node lx x rx → match rx with
-    | leaf         → (node lx x leaf)
-    | node ly y ry → (~ link (node lx x (node ly y (~ pass1 ry))))
+    | leaf         → node lx x leaf
+    | node ly y ry → ~ link (node lx x (node ly y (~ pass1 ry)))
 
 pass2 ∷ Ord α ⇒ Tree α → Tree α
 pass2 h = match h with
-  | node l x r → (~ link (node l x (~ pass2 r)))
+  | node l x r → ~ link (node l x (~ pass2 r))
 
 merge_pairs_via_pass ∷ Ord α ⇒ Tree α → Tree α
 merge_pairs_via_pass h = pass2 (pass1 h)
 
 delete_min_via_pass ∷ Ord α ⇒ Tree α → Tree α
 delete_min_via_pass h = match h with
-  | node l _ _ → (~ pass2 (~ pass1 l))
+  | node l _ _ → ~ pass2 (~ pass1 l)
 
 (**
  * Original definition:
@@ -139,7 +139,7 @@ pheap h = match h with
   | leaf → true
   | node l x r → (Bool.and (Bool.and (~ pheap l) (~ pheap r)) (~ all_leq l x))
 
-all_leq ∷ Ord α ⇒ Tree α ⨯ α → Bool
+all_leq ∷ Ord α ⇒ (Tree α ⨯ α) → Bool
 all_leq t x = match t with
   | leaf → true
   | node l y r → if y > x

@@ -1,7 +1,7 @@
 (**
  * Probabilistic model of SearchTree.insert
  *)
-insert ∷ α ⨯ Tree α → Tree α
+insert ∷ (α ⨯ Tree α) → Tree α
 insert d t = match t with
   | leaf       → node leaf d leaf
   | node l a r → if coin (* a < d *)
@@ -11,7 +11,7 @@ insert d t = match t with
 (**
  * Probabilistic model of SearchTree.contains
  *)
-contains ∷ Eq α ⇒ α ⨯ Tree α → Bool
+contains ∷ Eq α ⇒ (α ⨯ Tree α) → Bool
 contains d t = match t with
   | leaf       → false
   | node l a r → if a == d
@@ -23,13 +23,13 @@ contains d t = match t with
 (**
  * Probabilistic model of SearchTree.delete
  *)
-delete ∷ Eq α ⇒ α ⨯ Tree α → Tree α
+delete ∷ Eq α ⇒ (α ⨯ Tree α) → Tree α
 delete d t = match t with
   | node l a r → if a == d
     then match l with
       | leaf → r
-      | l    → match SearchTree.rotate_max_to_root l with
-        | node ll max ignore → node ll max r
+      | l    → match ~ SearchTree.delete_max l with
+        | (ll, m) → node ll m r
     else if coin (* a < d *)
       then ~ delete d l
       else ~ delete d r

@@ -1,12 +1,12 @@
-cons ∷ α ⨯ Tree α → Tree α
-cons x t = (node t x leaf)
+cons ∷ (α ⨯ Tree α) → Tree α
+cons x t = node t x leaf
 
-cons_cons ∷ α ⨯ α ⨯ Tree α → Tree α
-cons_cons x y t = (node (node t x leaf) y leaf)
+cons_cons ∷ (α ⨯ α ⨯ Tree α) → Tree α
+cons_cons x y t = node (node t x leaf) y leaf
 
 tl ∷ Tree α → Tree α
 tl t = match t with
-  | node l x r → l
+  | node l _ _ → l
 
 (**
  * The number of recursive calls is equivalent to
@@ -17,30 +17,11 @@ tl t = match t with
  * the number of recursive calls to append!
  * We therefore expect cost to be expressed only
  * in some terms dependent on t1.
- *
- * -------------------------------------------------------------------
- *
- * Attempt to annotate:
- *   append t1 t2 | 1 * rk(t1)
- *
- * Attempt to prove:
- * Case: t1 == (l, x, r)
- *   rk(t1)                                >= rk((append l t2, x, r)) + 1
- *   rk((l, x, r))                         >= ...
- *   rk(l) + log'(|l|) + log'(|r|) + rk(r) >= ...
- *   rk(l) + log'(|l|) + log'(|r|) + rk(r) >= rk((append l t2, x, r)) + 1
- *   ...                                   >= rk(append l t2) + log'(|append l t2|) + log'(|r|) + rk(r) + 1
- *   rk(l) + log'(|l|)                     >= rk(append l t2) + log'(|append l t2|) + 1
- * ! At this point we are stuck, since we do not know how to cancel `append l t2`.
- * Case: t1 == leaf
- *   rk(t1)  >= 0
- *   rk(leaf) >= 0
- *   0       >= 0
  *)
-append ∷ Tree α ⨯ Tree α → Tree α
+append ∷ (Tree α ⨯ Tree α) → Tree α
 append t1 t2 = match t1 with
-  | leaf      → t2
-  | node l x r → (cons x (append l t2))
+  | leaf       → t2
+  | node l x _ → (cons x (append l t2))
 
 (**
  * This function is equivalent to
@@ -49,66 +30,10 @@ append t1 t2 = match t1 with
  *
  * on trees, but costs the "leftmost depth"
  * of t.
- *
- * -------------------------------------------------------------------
- *
- * Attempt to annotate:
- *   descend t | 1 * rk(t)
- *
- * Attempt to prove:
- * Case: t == leaf
- *   rk(t)   >= 0
- *   rk(leaf) >= 0
- *   0       >= 0
- * Case: t == (l, x, r)
- *   rk(t)                                 >= rk(l) + 1
- *   rk((l, x, r))                         >= rk(l) + 1
- *   rk(l) + log'(|l|) + log'(|r|) + rk(r) >= rk(l) + 1
- *           log'(|l|) + log'(|r|) + rk(r) >=         1
- * ! Error, since for l == leaf and r == leaf we have that 0 >= 1.
- *
- * -------------------------------------------------------------------
- *
- * Attempt to annotate:
- *   descend x t | 1 * p_{(1, 2)}
- *   ...              | 1 * log'(1 * |t| + 2)
- *   ...              |     log'(    |t| + 2)
- *
- * Attempt to prove:
- * Case: t == leaf
- *   log'(|t| + 2) >= 0
- *   log'(|t| + 2) >= log'(2) = 1 >= 0
- * Case: t == (l, x, r)
- *   log'(|t|         + 2) >= log'(|l| + 2) + 1
- *   log'(|(l, x, r)| + 2) >= log'(|l| + 2) + 1
- *   log'(|l| + |r|   + 2) >= log'(|l| + 2) + 1
- * ! Error, since for l == leaf and r == leaf we have that 1 >= 2.
- *
- * -------------------------------------------------------------------
- *
- * Attempt to annotate with new potential `ht` (short for "height"):
- *   ht(leaf)      := 1
- *   ht((l, _, r) := max({ht(l), ht(r)}) + 1
- *
- *   descend x t | ht(t)
- *
- * Attempt to prove:
- * Case: t == leaf
- *   ht(t) >= 0
- *   by definition of ht.
- * Case: t == (l, x, r)
- *   ht(t)                   >= ht(l) + 1
- *   ht((l, y, r))           >= ht(l) + 1
- *   max({ht(l), ht(r)}) + 1 >= ht(l) + 1
- *   max({ht(l), ht(r)})     >= ht(l)
- *   Case: ht(l) >= ht(r)
- *     ht(l) >= ht(l)
- *   Case: ht(l) < ht(r)
- *     ht(r) >= ht(l)
  *)
 descend ∷ Tree α → Tree β
 descend t = match t with
-  | node l x r → (descend l)
+  | node l _ _ → (descend l)
 
 (**
  * This function is equivalent to
@@ -118,7 +43,7 @@ descend t = match t with
  * on trees, but costs the "leftmost depth"
  * of t1.
  *)
-descend_on_first ∷ Tree α ⨯ Tree α → Tree β
+descend_on_first ∷ (Tree α ⨯ Tree α) → Tree β
 descend_on_first t1 t2 = match t1 with
   | node l x r → (descend_on_first l t2)
 
@@ -130,21 +55,21 @@ descend_on_first t1 t2 = match t1 with
  * on trees, but costs the "leftmost depth"
  * of t2.
  *)
-descend_on_second ∷ Tree α ⨯ Tree α → Tree β
+descend_on_second ∷ (Tree α ⨯ Tree α) → Tree β
 descend_on_second t1 t2 = match t2 with
   | node l x r → (descend_on_second t1 l)
 
-inorder ∷ Tree α ⨯ Tree α → Tree α
+inorder ∷ (Tree α ⨯ Tree α) → Tree α
 inorder t1 t2 = match t1 with
-  | leaf      → t2
+  | leaf       → t2
   | node l x r → (inorder l (cons x (inorder r t2)))
 
 is ∷ Tree α → Bool
 is t = match t with
-  | leaf        → true
-  | node lx x rx → match rx with
-    | leaf        → is lx
-    | node ly y ry → false
+  | leaf       → true
+  | node l _ r → match r with
+    | leaf       → is l
+    | node _ _ _ → false
 
 (**
  * This function is equivalent to
@@ -158,12 +83,12 @@ iter ∷ Tree α → Tree α
 iter t = match t with
   | node l x r → (cons x (iter l))
 
-postorder ∷ Tree α ⨯ Tree α → Tree α
+postorder ∷ (Tree α ⨯ Tree α) → Tree α
 postorder t1 t2 = match t1 with
   | leaf      → t2
   | node l x r → (postorder l (postorder r (cons x t2)))
 
-preorder ∷ Tree α ⨯ Tree α → Tree α
+preorder ∷ (Tree α ⨯ Tree α) → Tree α
 preorder t1 t2 = match t1 with
   | leaf      → t2
   | node l x r → (cons x (preorder l (preorder r t2)))
@@ -180,7 +105,7 @@ preorder t1 t2 = match t1 with
  * in some terms dependent on t1.
  * We think that our type system cannot solve this.
  *)
-rev_append ∷ Tree α ⨯ Tree α → Tree α
+rev_append ∷ (Tree α ⨯ Tree α) → Tree α
 rev_append t1 t2 = match t1 with
   | leaf      → t2
   | node l x r → (rev_append l (cons x t2))

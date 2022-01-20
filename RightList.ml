@@ -1,7 +1,7 @@
-cons ∷ α ⨯ Tree α → Tree α
+cons ∷ (α ⨯ Tree α) → Tree α
 cons x t = (node leaf x t)
 
-cons_cons ∷ α ⨯ α ⨯ Tree α → Tree α
+cons_cons ∷ (α ⨯ α ⨯ Tree α) → Tree α
 cons_cons x y t = (node leaf y (node leaf x t))
 
 (**
@@ -26,7 +26,7 @@ tl t = match t with
  *
  * Attempt for annotation is symmetric to append_left.
  *)
-append ∷ Tree α ⨯ Tree α → Tree α
+append ∷ (Tree α ⨯ Tree α) → Tree α
 append t1 t2 = match t1 with
   | leaf      → t2
   | node l x r → (cons x (append r t2))
@@ -77,7 +77,7 @@ iter t = match t with
  * in some terms dependent on t1.
  * We think that our type system cannot solve this.
  *)
-rev_append ∷ Tree α ⨯ Tree α → Tree α
+rev_append ∷ (Tree α ⨯ Tree α) → Tree α
 rev_append t1 t2 = match t1 with
   | leaf      → t2
   | node l x r → (rev_append r (cons x t2))

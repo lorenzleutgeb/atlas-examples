@@ -9,15 +9,15 @@
  *   https://dblp.org/rec/journals/jar/NipkowB19
  *)
 
-insert ∷ Ord α ⇒ α ⨯ Tree α → Tree α
+insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α
 insert x h = (merge (node leaf x leaf) h)
 
-delete_min ∷ Ord α ⇒ α ⨯ Tree α → (Tree α ⨯ α)
+delete_min ∷ Ord α ⇒ (α ⨯ Tree α) → (Tree α ⨯ α)
 delete_min z h = match h with
   | leaf       → (leaf, z)
   | node l x r → ((merge l r), x)
 
-merge ∷ Ord α ⇒ Tree α ⨯ Tree α → Tree α
+merge ∷ Ord α ⇒ (Tree α ⨯ Tree α) → Tree α
 merge h1 h2 = match h1 with
   | leaf             → h2
   | node h1l h1x h1r → match h2 with
