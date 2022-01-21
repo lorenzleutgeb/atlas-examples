@@ -1,6 +1,9 @@
 Bool.and	Bool.ml	/^and/;"	line:8	end:8
 Bool.not	Bool.ml	/^not/;"	line:2	end:2
 Bool.or	Bool.ml	/^or/;"	line:5	end:5
+CoinSearchTree.contains	CoinSearchTree.ml	/^contains/;"	line:21	end:27
+CoinSearchTree.delete	CoinSearchTree.ml	/^delete/;"	line:33	end:41
+CoinSearchTree.insert	CoinSearchTree.ml	/^insert/;"	line:11	end:15
 Infinite.infinite_1	Infinite.ml	/^infinite_1/;"	line:4	end:4
 Infinite.infinite_10	Infinite.ml	/^infinite_10/;"	line:36	end:36
 Infinite.infinite_11	Infinite.ml	/^infinite_11/;"	line:42	end:42
@@ -57,9 +60,6 @@ Rand.h	Rand.ml	/^h/;"	line:12	end:14
 RandMeldableHeap.delete_min	RandMeldableHeap.ml	/^delete_min/;"	line:15	end:17
 RandMeldableHeap.insert	RandMeldableHeap.ml	/^insert/;"	line:12	end:12
 RandMeldableHeap.meld	RandMeldableHeap.ml	/^meld/;"	line:20	end:30
-RandSearchTree.contains	RandSearchTree.ml	/^contains/;"	line:15	end:21
-RandSearchTree.delete	RandSearchTree.ml	/^delete/;"	line:27	end:35
-RandSearchTree.insert	RandSearchTree.ml	/^insert/;"	line:5	end:9
 RandSplayHeap.delete_min	RandSplayHeap.ml	/^delete_min/;"	line:13	end:22
 RandSplayHeap.insert	RandSplayHeap.ml	/^insert/;"	line:25	end:48
 RandSplayTree.delete	RandSplayTree.ml	/^delete/;"	line:96	end:136
