@@ -1,4 +1,10 @@
 (**
+ * A version of SearchTree, where comparison of elements α
+ * is replaced by a coin flip. Thus, it does not require
+ * Ord α but just Eq α.
+ *)
+
+(**
  * Probabilistic model of SearchTree.insert
  *)
 insert ∷ (α ⨯ Tree α) → Tree α
