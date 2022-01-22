@@ -3,6 +3,7 @@ Bool.not	Bool.ml	/^not/;"	line:2	end:2
 Bool.or	Bool.ml	/^or/;"	line:5	end:5
 CoinSearchTree.contains	CoinSearchTree.ml	/^contains/;"	line:21	end:27
 CoinSearchTree.delete	CoinSearchTree.ml	/^delete/;"	line:33	end:41
+CoinSearchTree.delete_max	CoinSearchTree.ml	/^delete_max/;"	line:48	end:57
 CoinSearchTree.insert	CoinSearchTree.ml	/^insert/;"	line:11	end:15
 Infinite.infinite_1	Infinite.ml	/^infinite_1/;"	line:4	end:4
 Infinite.infinite_10	Infinite.ml	/^infinite_10/;"	line:36	end:36

@@ -19,7 +19,7 @@ delete z d t = match t with
   | node l a r → if a == d
     then match l with
       | leaf → r
-      | l    → match ~ SearchTree.delete_max z l with
+      | l    → match ~ delete_max z l with
         | (ll, m) → node ll m r
     else if a < d
       then ~ delete z d l
