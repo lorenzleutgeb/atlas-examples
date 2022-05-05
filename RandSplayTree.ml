@@ -1,4 +1,4 @@
-splay ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α
+splay ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α | [[0 ↦ 3/4, (0 2) ↦ 3/4, (1 0) ↦ 9/8] → [0 ↦ 3/4, (0 2) ↦ 3/4], {[(1 0) ↦ 3/8] → [(1 0) ↦ 3/8]}]
 splay a t = match t with
   | node cl c cr → if a == c
     then (node cl c cr)
@@ -38,7 +38,7 @@ splay a t = match t with
                   then ~ 1/2 node (node (node cl c bl) b al) a ar
                   else       node cl c (node bl b (node al a ar))
 
-insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α
+insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α | [[0 ↦ 3/4, (0 2) ↦ 3/4, (1 0) ↦ 3/4, (1 1) ↦ 3/4] → [0 ↦ 3/4, (0 2) ↦ 3/4], {[(1 1) ↦ 3/8] → [(1 0) ↦ 3/8]}]
 insert a t = match t with
   | node cl c cr → if a == c
     then (node cl c cr)
@@ -78,7 +78,7 @@ insert a t = match t with
                   then ~ 1/2 node (node (node cl c bl) b al) a ar
                   else       node cl c (node bl b (node al a ar))
 
-splay_max ∷ (α ⨯ Tree α) → (Tree α ⨯ α)
+splay_max ∷ (α ⨯ Tree α) → (Tree α ⨯ α) | [[0 ↦ 3/4, (0 2) ↦ 3/4, (1 0) ↦ 9/8] → [0 ↦ 3/4, (0 2) ↦ 3/4], {[(1 0) ↦ 3/8] → [(1 0) ↦ 3/8]}]
 splay_max z t = match t with
   | leaf      → (leaf, z)
   | node l b r → match r with
@@ -92,7 +92,7 @@ splay_max z t = match t with
             then ~ 1/2 (node (node (node l b rl) c rrl1) x xa, max)
             else       (node l b (node rl c (node rrl1 x xa)), max) (* No rotation! *)
 
-delete ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α
+delete ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α | [[0 ↦ 3/4, (0 2) ↦ 3/4, (1 0) ↦ 9/8] → [0 ↦ 3/4, (0 2) ↦ 3/4], {[(1 0) ↦ 3/8] → [(1 0) ↦ 3/8]}]
 delete z a t = match t with
   | node cl c cr → if a == c
     then match splay_max z cl with

@@ -8,7 +8,7 @@
  * Coin probability   : 2/3
  *)
 
-splay ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α
+splay ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α | [[0 ↦ 8/9, (1 0) ↦ 44/27, (0 2) ↦ 2/3] → [0 ↦ 8/9, (0 2) ↦ 2/3], {[(1 0) ↦ 4/9] → [(1 0) ↦ 4/9]}]
 splay a t = match t with
   | node cl c cr → if a == c
     then (node cl c cr)

@@ -48,7 +48,7 @@ merge h1 h2 = match h1 with
  *       then (node (node ly y lx) x leaf)
  *       else (node (node lx x ly) y leaf)
  *)
-merge_isolated ∷ Ord α ⇒ (Tree α ⨯ Tree α) → Tree α
+merge_isolated ∷ Ord α ⇒ (Tree α ⨯ Tree α) → Tree α | [[0 ↦ 1/2, 1 ↦ 1/2, (0 0 2) ↦ 3/2, (1 1 0) ↦ 1/2] → [0 ↦ 1/2, (0 2) ↦ 1], {}]
 merge_isolated h1 h2 = match h1 with
   | leaf        → h2
   | node lx x rx → match h2 with
@@ -60,7 +60,7 @@ merge_isolated h1 h2 = match h1 with
 insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α
 insert x h = (merge (node leaf x leaf) h)
 
-insert_isolated ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α
+insert_isolated ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α | [[0 ↦ 1/2, (0 2) ↦ 2, (1 0) ↦ 1/2] → [0 ↦ 1/2, (0 2) ↦ 1], {}]
 insert_isolated x h = match h with
   | leaf        → node leaf x leaf
   | node ly y _ → if x < y
@@ -68,12 +68,12 @@ insert_isolated x h = match h with
     else node (node leaf x ly) y leaf
 
 (* Same as `delete_min` but with `merge_pairs_isolated` instead of `pass1` and `pass2`. *)
-delete_min_via_merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α
+delete_min_via_merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α |  [[0 ↦ 1/2, (0 2) ↦ 2, (1 0) ↦ 1] → [0 ↦ 1/2, (0 2) ↦ 1], {}]
 delete_min_via_merge_pairs_isolated h = match h with
   | node l _ _ → ~ merge_pairs_isolated l
 
 (* The same as `merge_pairs` but with `link` inlined. *)
-merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α
+merge_pairs_isolated ∷ Ord α ⇒ Tree α → Tree α | [[0 ↦ 1/2, (0 2) ↦ 1, (1 0) ↦ 3/2] → [0 ↦ 1/2, (0 2) ↦ 1], {[(1 0) ↦ 1/2] → [(1 0) ↦ 1/2]}]
 merge_pairs_isolated h = match h with
   | node la a ra → match ra with
     | leaf         → node la a leaf

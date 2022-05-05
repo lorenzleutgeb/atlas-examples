@@ -9,7 +9,7 @@
  *   https://dblp.org/rec/journals/jar/NipkowB19
  *)
 
-delete_min ∷ (α ⨯ Tree α) → (Tree α ⨯ α)
+delete_min ∷ (α ⨯ Tree α) → (Tree α ⨯ α) | [[0 ↦ 3/4, (0 2) ↦ 1/2, (1 0) ↦ 3/4] → [0 ↦ 3/4, (0 2) ↦ 1/2], {[(1 0) ↦ 3/8] → [(1 0) ↦ 3/8]}]
 delete_min z t = match t with
   | leaf          → (leaf, z)
   | node tab b tc → match tab with
@@ -21,7 +21,7 @@ delete_min z t = match t with
           then ~ 1/2 (node t1 a (node tb b tc), m)
           else       (node (node t1 a tb) b tc, m)
 
-insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α
+insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α | [[0 ↦ 3/4, (0 2) ↦ 1/2, (1 0) ↦ 3/4, (1 1) ↦ 3/4] → [0 ↦ 3/4, (0 2) ↦ 1/2], {[(1 1) ↦ 3/8] → [(1 0) ↦ 3/8]}]
 insert d t = match t with
   | node tab ab tbc → if ab <= d
     then match tbc with

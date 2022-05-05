@@ -9,7 +9,7 @@
  *   https://dblp.org/rec/journals/jar/NipkowB19
  *)
 
-splay ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α
+splay ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α | [[0 ↦ 1/2, (0 2) ↦ 1, (1 0) ↦ 3/2] → [0 ↦ 1/2, (0 2) ↦ 1], {[(1 0) ↦ 1/2] → [(1 0) ↦ 1/2]}]
 splay a t = match t with
   | node cl c cr → if a == c
     then node cl c cr
@@ -41,7 +41,7 @@ splay a t = match t with
               | br   → match ~ splay a br with
                 | node al _ ar → node (node (node cl c bl) b al) a ar
 
-splay_max ∷ Tree α → Tree α
+splay_max ∷ Tree α → Tree α | [[0 ↦ 1/2, (0 2) ↦ 1, (1 0) ↦ 3/2] → [0 ↦ 1/2, (0 2) ↦ 1], {[(1 0) ↦ 1/2] → [(1 0) ↦ 1/2]}]
 splay_max t = match t with
   | node l b r → match r with
     | leaf         → node l b leaf
@@ -50,7 +50,7 @@ splay_max t = match t with
       | rr   → match ~ splay_max rr with
         | node rrl1 x xa → node (node (node l b rl) c rrl1) x xa
 
-delete ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α
+delete ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α | [[0 ↦ 1/2, (0 2) ↦ 3, (1 0) ↦ 5/2] → [0 ↦ 1/2, (0 2) ↦ 1], {}]
 delete a t = match ~ splay a t with
   | node l b r → if a == b
     then match l with
@@ -59,7 +59,7 @@ delete a t = match ~ splay a t with
         | node ll m _ → node ll m r
     else node l b r
 
-insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α
+insert ∷ Ord α ⇒ (α ⨯ Tree α) → Tree α | [[0 ↦ 1/2, (0 2) ↦ 3/2, (1 0) ↦ 2] → [0 ↦ 1/2, (0 2) ↦ 1], {}]
 insert a t = match t with
   | leaf → node leaf a leaf
   | t    → match splay a t with

@@ -9,12 +9,12 @@
  *   https://dblp.org/rec/journals/jar/NipkowB19
  *)
 
-insert ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α
+insert ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α | [[0 ↦ 1/2, (0 2) ↦ 5/2, (1 0) ↦ 1/2, (1 1) ↦ 1] → [0 ↦ 1/2, (0 2) ↦ 1], {}]
 insert d x h = match ~ partition d x h with
   | leaf       → (node leaf x leaf)
   | node l _ r → (node l x r)
 
-delete_min ∷ Tree α → Tree α
+delete_min ∷ Tree α → Tree α | [[0 ↦ 1/2, (0 2) ↦ 1, (1 0) ↦ 1] → [0 ↦ 1/2, (0 2) ↦ 1], {[(1 1) ↦ 1/2] → [(1 0) ↦ 1/2]}]
 delete_min t = match t with
   | node tab b tc → match tab with
     | leaf         → tc
@@ -22,7 +22,7 @@ delete_min t = match t with
       | leaf → (node tb b tc)
       | ta   → (node (~ delete_min ta) a (node tb b tc))
 
-partition ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α
+partition ∷ Ord α ⇒ (α ⨯ α ⨯ Tree α) → Tree α | [[0 ↦ 1/2, (0 2) ↦ 1, (1 0) ↦ 1/2, (1 1) ↦ 1] → [0 ↦ 1/2, (0 2) ↦ 1], {[(1 1) ↦ 1/2] → [(1 0) ↦ 1/2]}]
 partition d p t = match t with
   | node tab ab tbc → if ab <= p
     then match tbc with

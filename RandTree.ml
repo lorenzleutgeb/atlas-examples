@@ -1,4 +1,4 @@
-descend ∷ Tree α → Tree α
+descend ∷ Tree α → Tree α | [[(1 0) ↦ 1] → [], {}]
 descend t = match t with
   | leaf → leaf
   | node l a r → if coin
