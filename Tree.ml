@@ -8,13 +8,6 @@ id x = x
 singleton ∷ α → Tree α
 singleton x = node leaf x leaf
 
-descend ∷ Tree α → Tree α
-descend t = match t with
-  | leaf       → leaf
-  | node l x r → if coin
-    then node (~ descend l) x r
-    else node l x (~ descend r)
-
 iter ∷ Tree α → Tree α
 iter t = match t with
   | node l x r → node (iter l) x (iter r)

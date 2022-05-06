@@ -21,7 +21,7 @@ splay a t = match t with
                   then ~ 1/2 node (node bl b al) a (node ar c cr)
                   else       node (node bl b (node al a ar)) c cr
       else match cr with
-        | leaf        → (node cl c leaf)
+        | leaf         → (node cl c leaf)
         | node bl b br → if a == b
           then (node cl c (node bl a br))  (* No rotation! *)
           else if a < b
