@@ -31,7 +31,7 @@ splay a t = match t with
                   then ~ 1/2 (node (node bl b al) a1 (node ar c cr))
                   else (node (node bl b (node al a1 ar)) c cr)
       else match cr with
-        | leaf        → (node cl c leaf)
+        | leaf         → (node cl c leaf)
         | node bl b br → if a == b
           then (node cl c (node bl a br))  (* No rotation! *)
           else if a < b
@@ -47,3 +47,15 @@ splay a t = match t with
                 | node al a1 ar → if coin 1/3
                   then ~ 1/2 (node (node (node cl c bl) b al) a1 ar)
                   else (node cl c (node bl b (node al a1 ar)))
+
+splay_zigzig ∷ (α ⨯ Tree α) → Tree α | [[0 ↦ 3/4, (1 0) ↦ 9/8, (0 2) ↦ 1/2] → [0 ↦ 3/4, (0 2) ↦ 1/2], {[(1 0) ↦ 3/8] → [(1 0) ↦ 3/8]}]
+splay_zigzig a t = match t with
+  | node cl c cr → match cl with  (* assume a < c *)
+    | leaf         → (node leaf c cr)
+    | node bl b br → match bl with  (* assume a < b *)
+      | leaf → (node leaf b (node br c cr))
+      | bl   → match ~ 1/2 splay_zigzig a bl with
+        | node al a1 ar → if coin 1/3
+          then ~ 1/2 (node al a1 (node ar b (node br c cr)))
+          else (node (node (node al a1 ar) b br) c cr)
+
