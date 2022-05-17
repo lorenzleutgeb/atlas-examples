@@ -3,7 +3,7 @@
  *
  * DO NOT EDIT
  *
- * Cost for recursion : 2/3 = 1 - 2/3
+ * Cost for recursion : 1/3 = 1 - 2/3
  * Cost for rotation  : 2/3 = 1 - 1/3
  * Coin probability   : 2/3
  *)

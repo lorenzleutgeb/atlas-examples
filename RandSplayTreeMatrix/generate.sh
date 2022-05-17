@@ -16,14 +16,14 @@ N="1/3 1/2 2/3"
 
 RESULTS=(
 # P = 1/3
-"2/3" "1"
-"3/4" "9/8"
-"5/6" "5/4"
-
-# P = 1/2
 "5/6" "5/6"
 "1" "1"
 "7/6" "7/6"
+
+# P = 1/2
+"2/3" "1"
+"3/4" "9/8"
+"5/6" "5/4"
 
 # P = 2/3
 "7/9" "77/54"
@@ -67,7 +67,7 @@ do
  *
  * DO NOT EDIT
  *
- * Cost for recursion : $P = 1 - $C_ROT
+ * Cost for recursion : $C_REC = 1 - $C_ROT
  * Cost for rotation  : $C_ROT = 1 - $C_REC
  * Coin probability   : $P
  *)
