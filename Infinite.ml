@@ -4,7 +4,10 @@ infinite_1 ∷ α → Tree α
 infinite_1 x = node (~ infinite_1 x) x (~ infinite_1 x)
 
 infinite_2 ∷ (α ⨯ Tree α) → Tree α
-infinite_2 x t = node (~ infinite_2 x t) x t
+infinite_2 x t = node (~ infinite_2 x t) x leaf
+
+infinite_2a ∷ (α ⨯ Tree α) → Tree α
+infinite_2a x t = node (~ infinite_2a x t) x leaf
 
 infinite_3 ∷ (α ⨯ Tree α) → Tree α
 infinite_3 x t = (~ infinite_2 x t)
@@ -74,3 +77,6 @@ infinite_19a x t = node (~ infinite_19b x t) x leaf
 
 infinite_19b :: (α ⨯ β) → Tree α
 infinite_19b x t = node (~ infinite_19a x t) x leaf
+
+infinite_20 :: Tree α -> Tree α | [[] → [], {[] → [(0 2) |-> 1]}]
+infinite_20 x = (~ infinite_20 x)
