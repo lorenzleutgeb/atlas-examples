@@ -7,7 +7,7 @@
 (**
  * Probabilistic model of SearchTree.insert
  *)
-insert ∷ (α ⨯ Tree α) → Tree α | [[0 ↦ 1/2, (0 2) ↦ 1/2, (1 0) ↦ 3/2] → [0 ↦ 1/2], {[(1 1) ↦ 1/2] → [(1 0) ↦ 1/2]}]
+insert ∷ (α ⨯ Tree α) → Tree α | [[0 ↦ 1/2, (0 2) ↦ 3/2, (1 0) ↦ 3/2] → [0 ↦ 1/2, (0 2) ↦ 1], {[(1 1) ↦ 1/2] → [(1 0) ↦ 1/2]}]
 insert d t = match t with
   | leaf       → node leaf d leaf
   | node l a r → if coin (* a < d *)
@@ -29,7 +29,7 @@ contains d t = match t with
 (**
  * Probabilistic model of SearchTree.delete
  *)
-delete ∷ Eq α ⇒ (α ⨯ α ⨯ Tree α) → Tree α | [[0 ↦ 1/2, (0 2) ↦ 3/2, (1 0) ↦ 3/2] → [0 ↦ 1/2, (0 2) ↦ 1/2], {[] → []}]
+delete ∷ Eq α ⇒ (α ⨯ α ⨯ Tree α) → Tree α | [[0 ↦ 1/2, (0 2) ↦ 2, (1 0) ↦ 3/2] → [0 ↦ 1/2, (0 2) ↦ 1], {[] → []}]
 delete z d t = match t with
   | node l a r → if a == d
     then match l with
@@ -44,7 +44,7 @@ delete z d t = match t with
  * Equal to SearchTree.delete_max, but duplicated
  * here since we want to annotate trees per module.
  *)
-delete_max ∷ (α ⨯ Tree α) → (Tree α ⨯ α) | [[0 ↦ 1/2, (0 2) ↦ 1/2, (1 0) ↦ 3/2] → [0 ↦ 1/2, (0 2) ↦ 1/2], {[(1 0) ↦ 1/4] → [(1 0) ↦ 1/4]}]
+delete_max ∷ (α ⨯ Tree α) → (Tree α ⨯ α) | [[0 ↦ 1/2, (0 2) ↦ 1, (1 0) ↦ 3/2] → [0 ↦ 1/2, (0 2) ↦ 1], {[(1 0) ↦ 1/4] → [(1 0) ↦ 1/4]}]
 delete_max z t = match t with
   | leaf       → (leaf, z)
   | node cl c cr → match cr with
